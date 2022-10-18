@@ -10,8 +10,8 @@ HttpClient client = new HttpClient();
 app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_get_courses";
-    var moodlewsrestformat = request.Query["moodlewsrestformat"];
-    var stringTask = client.GetStreamAsync($"http://localhost/moodle/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
+    var moodlewsrestformat = "json";
+    var stringTask = client.GetStreamAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
     try{
         var message = await JsonSerializer.DeserializeAsync<List<Course>>(await stringTask);
         if(message is not null){
@@ -35,12 +35,13 @@ app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) =
     var fullname = request.Query["fullname"];
     var shortname = request.Query["shortname"];
     var categoryId = Int32.Parse(request.Query["categoryid"]);
+    var moodlewsrestformat = "json";
     Course newCourse = new Course();
     newCourse.fullname = fullname;
     newCourse.shortname = shortname;
     newCourse.categoryid = categoryId;
     string course = Course.courseToString(newCourse);
-    client.GetAsync($"http://localhost/moodle/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat=json"+course);
+    client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+course);
     response.WriteAsync($"Je hebt {newCourse.fullname} toegevoegd.");
 });
 
@@ -48,7 +49,8 @@ app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_delete_courses";
     var id = request.Query["id"];
-    client.GetAsync($"http://localhost/moodle/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat=json&courseids[0]={id}");
+    var moodlewsrestformat = "json";
+    client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
 });
 
 app.Run();

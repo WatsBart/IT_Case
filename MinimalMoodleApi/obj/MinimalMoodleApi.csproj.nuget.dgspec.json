@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bartw\\Documents\\ap\\jaar2\\IT_Case\\MinimalApi\\MinimalMoodleApi\\MinimalMoodleApi.csproj": {}
+    "D:\\AP\\Jaar 2\\cvo\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bartw\\Documents\\ap\\jaar2\\IT_Case\\MinimalApi\\MinimalMoodleApi\\MinimalMoodleApi.csproj": {
+    "D:\\AP\\Jaar 2\\cvo\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bartw\\Documents\\ap\\jaar2\\IT_Case\\MinimalApi\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
+        "projectUniqueName": "D:\\AP\\Jaar 2\\cvo\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
         "projectName": "MinimalMoodleApi",
-        "projectPath": "C:\\Users\\bartw\\Documents\\ap\\jaar2\\IT_Case\\MinimalApi\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
-        "packagesPath": "C:\\Users\\bartw\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bartw\\Documents\\ap\\jaar2\\IT_Case\\MinimalApi\\MinimalMoodleApi\\obj\\",
+        "projectPath": "D:\\AP\\Jaar 2\\cvo\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
+        "packagesPath": "C:\\Users\\alexa\\.nuget\\packages\\",
+        "outputPath": "D:\\AP\\Jaar 2\\cvo\\IT_Case\\MinimalMoodleApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\bartw\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\alexa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
