@@ -7,6 +7,7 @@ var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 HttpClient client = new HttpClient();
 
+//course methods
 app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_get_courses";
@@ -29,7 +30,7 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => 
     }
 });
 
-app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) => {
+app.MapPost("/createcourse", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_create_courses";
     var fullname = request.Query["fullname"];
@@ -52,6 +53,28 @@ app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =
     var moodlewsrestformat = "json";
     client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
 });
+
+//user methods
+app.MapPost("/createuser", async (HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_create_users";
+    var username = request.Query["username"];
+    var password = request.Query["password"];
+    var firstname = request.Query["firstname"];
+    var lastname = request.Query["lastname"];
+    var email = request.Query["email"];
+    var moodlewsrestformat = "json";
+    User newUser = new User();
+    newUser.username = username;
+    newUser.password = password;
+    newUser.firstname = firstname;
+    newUser.lastname = lastname;
+    newUser.email = email;
+    string user = User.userToString(newUser);
+    client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
+    response.WriteAsync(user);
+});
+
 
 app.Run();
 
@@ -99,3 +122,22 @@ public class Course{
                     return stringCourses;
                 } 
 }
+
+public class User
+        {
+            public string username { get; set; }
+            public string password { get; set; }
+            public string firstname { get; set; }
+            public string lastname { get; set; }
+            public string email { get; set; }
+
+            public static string userToString(User user){
+                    string stringUsers = "";
+                    stringUsers = stringUsers + $"&users[0][username]={user.username}";
+                    stringUsers = stringUsers + $"&users[0][password]={user.password}";
+                    stringUsers = stringUsers + $"&users[0][firstname]={user.firstname}";
+                    stringUsers = stringUsers + $"&users[0][lastname]={user.lastname}";
+                    stringUsers = stringUsers + $"&users[0][email]={user.email}";
+                    return stringUsers;
+                } 
+        }
