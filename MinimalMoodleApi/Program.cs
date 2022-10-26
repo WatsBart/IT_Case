@@ -72,7 +72,7 @@ app.MapPost("/createuser", async (HttpRequest request, HttpResponse response) =>
     newUser.email = email;
     string user = User.userToString(newUser);
     client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
-    response.WriteAsync(user);
+    response.WriteAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
 });
 
 
