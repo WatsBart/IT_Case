@@ -74,14 +74,42 @@ app.MapPost("/createuser", async (HttpRequest request, HttpResponse response) =>
     HttpClientHandler clientHandler = new HttpClientHandler();
     clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
-    // Pass the handler to httpclient(from you are calling api)
+    // Pass the handler to httpclient
     HttpClient client = new HttpClient(clientHandler);
     
     await client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
     response.WriteAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
 });
 
+app.MapGet("/deleteuser", async (HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_delete_users";
+    var id = request.Query["id"];
+    var moodlewsrestformat = "json";
+    await client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&userids[0]={id}");
+});
 
+app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_get_users";
+    var moodlewsrestformat = "json";
+    var stringTask = client.GetStreamAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
+    try{
+        var message = await JsonSerializer.DeserializeAsync<List<User>>(await stringTask);
+        if(message is not null){
+            foreach(var repo in message){
+                response.WriteAsync(repo.id+"\n");
+                response.WriteAsync(repo.username+"\n");
+                response.WriteAsync(repo.password+"\n");
+            }
+        }        
+    }catch(Exception e){
+        var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
+        if(message is not null){
+            Console.WriteLine(message.ToString());
+        }
+    }
+});
 app.Run();
 
 public class Course{
@@ -131,6 +159,7 @@ public class Course{
 
 public class User
         {
+            public string id { get; set; }
             public string username { get; set; }
             public string password { get; set; }
             public string firstname { get; set; }
