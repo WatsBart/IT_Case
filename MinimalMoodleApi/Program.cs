@@ -1,7 +1,9 @@
 using System.Text.Json;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
+app.UseHttpsRedirection();
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
@@ -75,6 +77,22 @@ app.MapPost("/createuser", async (HttpRequest request, HttpResponse response) =>
     response.WriteAsync(user);
 });
 
+app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var username = request.Query["username"];
+    var email = request.Query["email"];
+    var wsfunction = "core_auth_request_password_reset";
+    var moodlewsrestformat = "json";
+    var data = new[]
+    {
+        new KeyValuePair<string, string>("username",username),
+        new KeyValuePair<string,string>("email",email)
+    };
+    var reply = await client.PostAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}",new FormUrlEncodedContent(data));
+    reply.EnsureSuccessStatusCode();
+    string replyBody = await reply.Content.ReadAsStringAsync();
+    Console.WriteLine(replyBody);
+});
 
 app.Run();
 

@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "kuIu5mos3mI31Rpsx3kcOT9aimfcwF11MzxZ1Av8txhEDOA+u5aYZ9X6ZwazSfxLJwbsQDQDmedtWL2HR1BNig==",
+  "dgSpecHash": "Fa5H7Z4dScrOSsPwXHBLMBTgDp3FjeV4rGVajYVk0Wrg7HWn3cUh2dppRWzoAedsk2jF40CAk5J8ml2r50DkNQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\power\\OneDrive\\Bureaublad\\MoodleApi\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
+  "projectFilePath": "C:\\Users\\bartw\\Documents\\ap\\jaar2\\IT_Case\\git\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\power\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
-    "C:\\Users\\power\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
-    "C:\\Users\\power\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
-    "C:\\Users\\power\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
-    "C:\\Users\\power\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
-    "C:\\Users\\power\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+    "C:\\Users\\bartw\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\bartw\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
   ],
   "logs": []
 }
