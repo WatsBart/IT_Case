@@ -1,11 +1,74 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 HttpClient client = new HttpClient();
+
+
+//adjust authentication settings
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options=>{
+    options.TokenValidationParameters = new TokenValidationParameters(){
+        ValidateActor = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+//add authorization to endpoints
+builder.Services.AddAuthorization();
+var app = builder.Build();
+
+app.MapPost("/createToken",
+[AllowAnonymous] (TokenUser user) =>
+{
+    if (user.UserName == "test" && user.Password == "test123")
+    {
+        var issuer = builder.Configuration["Jwt:Issuer"];
+        var audience = builder.Configuration["Jwt:Audience"];
+        var key = Encoding.ASCII.GetBytes
+        (builder.Configuration["Jwt:Key"]);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim("Id", Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti,
+                Guid.NewGuid().ToString())
+             }),
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            Issuer = issuer,
+            Audience = audience,
+            SigningCredentials = new SigningCredentials
+            (new SymmetricSecurityKey(key),
+            SecurityAlgorithms.HmacSha512Signature)
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var jwtToken = tokenHandler.WriteToken(token);
+        var stringToken = tokenHandler.WriteToken(token);
+        return Results.Ok(stringToken);
+    }
+    return Results.Unauthorized();
+});
+
+//token security testing function
+app.MapGet("/securityTest", async (HttpRequest request, HttpResponse response) => {
+    response.WriteAsync("hello world");
+}).RequireAuthorization();
 
 //course methods
 app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => {
@@ -110,6 +173,8 @@ app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
         }
     }
 });
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
 
 public class Course{
@@ -176,3 +241,8 @@ public class User
                     return stringUsers;
                 } 
         }
+        public class TokenUser
+{
+    public string UserName { get; set; }
+    public string Password { get; set; }
+}
