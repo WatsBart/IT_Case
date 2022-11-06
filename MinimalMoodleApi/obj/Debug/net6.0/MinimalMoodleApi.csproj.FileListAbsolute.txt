@@ -80,3 +80,10 @@ C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CopyComplete
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
