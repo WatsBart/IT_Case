@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Net;
-using System.Text;
+using Newtonsoft.Json;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
@@ -9,10 +8,10 @@ namespace TodoApi.Controllers
     [ApiController]
     public class CourseController
     {
-        private string token = "31d43f030eb949c3dbb1d3bfc4c9d91e";
+        public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
         //  API main page
 
-        [Route("api/v1")]
+        [Route("api/")]
         [HttpGet]
         public String MainPage()
         {
@@ -21,23 +20,21 @@ namespace TodoApi.Controllers
 
         //  CURSUS TOEVOEGEN
 
-        [Route("api/v1/addcourse/{fullname}/{shortname}/{categoryid}/{courseid}")]
+        [Route("api/addcourse/{fullname}/{shortname}/{categoryid}/{courseid}")]
         [HttpGet]
-        public String CreateCourse(string fullname, string shortname, int categoryid, int courseid = -1)
+        public String CreateCourse(string fullname, string shortname, long categoryid, string courseid)
         {
-            var course = new Course()
-            {
-                Fullname = fullname,
-                Shortname = shortname,
-                CategoryId = categoryid,
-                CourseId = courseid
-            };
+            var course = new Course();
+
+            course.Fullname = fullname;
+            course.Shortname = shortname;
+            course.Categoryid = categoryid;
+            course.Idnumber = courseid;
 
             string fns = $"&courses[0][fullname]={course.Fullname}";
             string sns = $"&courses[0][shortname]={course.Shortname}";
-            string cis = $"&courses[0][categoryid]={course.CategoryId}";
-            string cis2 = $"&courses[0][idnumber]={course.CourseId}";
-
+            string cis = $"&courses[0][categoryid]={course.Categoryid}";
+            string cis2 = $"&courses[0][idnumber]={course.Idnumber}";
             //string desc = $"&courses[0][summary]={description}";
             //string sumformat = $"&courses[0][summaryformat]={1}";
             
@@ -45,7 +42,7 @@ namespace TodoApi.Controllers
             HttpClient client = new HttpClient();
             try
             {
-                client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses{sns+fns+cis+cis2}&moodlewsrestformat=json");
+                client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses{sns + fns + cis+cis2}&moodlewsrestformat=json");
             }
             catch(Exception ex)
             {
@@ -54,37 +51,9 @@ namespace TodoApi.Controllers
             return $"Je hebt de volgende cursus toegevoegd: {course.Fullname} ({course.Shortname})";
         }
 
-        //  CURSUS TOEVOEGEN MET POST
-
-        [Route("api/v1/addcoursepost/{fullname}/{shortname}/{categoryid}/{courseid}")]
-        [HttpPost]
-        public String CreateCourseWithPost(string fullname, string shortname, int categoryid, int courseid = -1)
-        {
-            var course = new Course()
-            {
-                Fullname = fullname,
-                Shortname = shortname,
-                CategoryId = categoryid,
-                CourseId = courseid
-            };
-
-
-            using (var client = new HttpClient())
-            {
-                var endpoint = new Uri("http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses&moodlewsrestformat=json");
-                var courseJson = JsonConvert.SerializeObject(course);
-                var payload = new StringContent(courseJson, Encoding.UTF8, "application/json");
-
-                var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
-
-                return result;
-            }
-        }
-
-
         //  CURSUS VERWIJDEREN (ID via course_get verkrijgen)
 
-        [Route("api/v1/deletecourse/{id}")]
+        [Route("api/deletecourse/{id}")]
         [HttpGet]
         public String DeleteCourse(int id)
         {
@@ -96,7 +65,7 @@ namespace TodoApi.Controllers
             return $"Je hebt de cursus met id-nummer: {id} verwijderd.";
         }
 
-        [Route("api/v1/getcourses")]
+        [Route("api/getcourses")]
         [HttpGet]
         public String GetCourses()
         {
@@ -105,7 +74,14 @@ namespace TodoApi.Controllers
             var result = responseTask.Result;
             var log = result.Content.ReadAsStringAsync();
             log.Wait();
-            return log.Result;
+            Course[] course = JsonConvert.DeserializeObject<Course[]>(log.Result);
+            string returnvalues = "";
+            for (int i = 1; i < course.Length; i++)
+            {
+                returnvalues = returnvalues + $"Fullname: {course[i].Fullname}\nId: {course[i].Id}\n\n";
+            }
+
+            return returnvalues;
 
 
         }

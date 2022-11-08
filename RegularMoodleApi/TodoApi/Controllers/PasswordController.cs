@@ -6,9 +6,9 @@ namespace TodoApi.Controllers
     [ApiController]
     public class PasswordController: PasswordReset
     {
-        private string token = "31d43f030eb949c3dbb1d3bfc4c9d91e";
+        private string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
 
-        [Route("api/v1/passwordreset/{email}")]
+        [Route("api/passwordreset/{email}")]
         [HttpGet]
         public string ResetPassword(string email)
         {
