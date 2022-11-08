@@ -78,7 +78,7 @@ namespace TodoApi.Controllers
             string returnvalues = "";
             for (int i = 1; i < course.Length; i++)
             {
-                returnvalues = returnvalues + $"Fullname: {course[i].Fullname}\nId: {course[i].Id}\n\n";
+                returnvalues = returnvalues + $"Fullname: {course[i].Fullname}\nShortname:{course[i].Shortname}\nId: {course[i].Id}\n\n";
             }
 
             return returnvalues;

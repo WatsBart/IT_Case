@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qDJxvi40k/4JJAhjrwJgZPk+Ru97vFtOHdSS+GqyJElM8BOp1VwuqbbwfnzrNcmIHW7bMuBQ/c0Kn8W/FaQ9Bg==",
+  "dgSpecHash": "dVFy7NHza5DvGyibqLZE0j1JUZDquM8PFqy+Eb+zJWvjSspBezfW4FCm5FYA40RiDWEGzkO5nnymMvPZTPaS/A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\seger\\Documents\\AP\\IT Case\\cvoa-apicalls\\TussenApiMoodle\\TodoApi\\TodoApi.csproj",
+  "projectFilePath": "C:\\Users\\seger\\Documents\\AP\\IT Case\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\seger\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\seger\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
