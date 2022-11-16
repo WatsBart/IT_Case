@@ -13,7 +13,7 @@ namespace TodoApi.Controllers
 
         [Route("api/")]
         [HttpGet]
-        public String MainPage()
+        public string MainPage()
         {
             return "Dit is de hoofd route van de api, je moet achter deze link nog de nodige info meegeven.";
         }
@@ -22,7 +22,7 @@ namespace TodoApi.Controllers
 
         [Route("api/addcourse/{fullname}/{shortname}/{categoryid}/{courseid}")]
         [HttpGet]
-        public String CreateCourse(string fullname, string shortname, long categoryid, string courseid)
+        public string CreateCourse(string fullname, string shortname, long categoryid, string courseid)
         {
             var course = new Course();
 
@@ -55,7 +55,7 @@ namespace TodoApi.Controllers
 
         [Route("api/deletecourse/{id}")]
         [HttpGet]
-        public String DeleteCourse(int id)
+        public string DeleteCourse(int id)
         {
             string ids = $"&courseids[0]={id}";
 
@@ -67,7 +67,7 @@ namespace TodoApi.Controllers
 
         [Route("api/getcourses")]
         [HttpGet]
-        public String GetCourses()
+        public string GetCourses()
         {
             HttpClient client = new HttpClient();
             var responseTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_get_courses&moodlewsrestformat=json");
@@ -78,7 +78,7 @@ namespace TodoApi.Controllers
             string returnvalues = "";
             for (int i = 1; i < course.Length; i++)
             {
-                returnvalues = returnvalues + $"Fullname: {course[i].Fullname}\nShortname:{course[i].Shortname}\nId: {course[i].Id}\n\n";
+                returnvalues += $"Fullname: {course[i].Fullname}\nShortname:{course[i].Shortname}\nId: {course[i].Id}\n\n";
             }
 
             return returnvalues;

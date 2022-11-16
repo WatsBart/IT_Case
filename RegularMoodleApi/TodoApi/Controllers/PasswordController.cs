@@ -33,7 +33,7 @@ namespace TodoApi.Controllers
                 return e.Message;
             }
 
-            return $"Het wachtwoord van  is gereset";
+            return $"Het wachtwoord van {email} is gereset";
         }
     }
 }
