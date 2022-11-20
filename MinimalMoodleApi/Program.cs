@@ -139,6 +139,42 @@ app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =
     }
 });
 */
+
+//Group methods
+app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_group_add_group_members";
+    var groupid = request.Query["groupid"];
+    var userid = request.Query["userid"];
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("members[0][groupid]",groupid),
+        new KeyValuePair<string,string>("members[0][userid]",userid)
+    };
+
+    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    
+});
+
+app.MapGet("/removeuserfromgroup", async(HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_group_delete_group_members";
+    var groupid = request.Query["groupid"];
+    var userid = request.Query["userid"];
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("members[0][groupid]",groupid),
+        new KeyValuePair<string,string>("members[0][userid]",userid)
+    };
+
+    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+});
+
+
 //Password Reset
 
 app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) =>
