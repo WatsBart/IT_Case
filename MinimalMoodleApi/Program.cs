@@ -10,6 +10,10 @@ var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 HttpClient client = new HttpClient();
 var uri = "http://localhost/webservice/rest/server.php";
 
+var post = async(string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string,string>[] data) => {
+    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+};
+
 //course methods
 app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
 {
@@ -53,7 +57,8 @@ app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) =
     newCourse.categoryid = categoryId;
     //string course = Course.courseToString(newCourse);
     var data = Course.courseToData(newCourse);
-    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    post(wstoken,wsfunction,moodlewsrestformat,data);
+    //client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     response.WriteAsync($"Je hebt {newCourse.fullname} toegevoegd.");
 });
 
@@ -64,6 +69,25 @@ app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =
     var id = request.Query["id"];
     var moodlewsrestformat = "json";
     client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
+});
+
+app.MapGet("/addusertocourse", async(HttpRequest request, HttpResponse response) => 
+{
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "enrol_manual_enrol_users";
+    var roleid = request.Query["roleid"];
+    var courseid = request.Query["courseid"];
+    var userid = request.Query["userid"];
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("enrolments[0][roleid]",roleid),
+        new KeyValuePair<string,string>("enrolments[0][userid]",userid),
+        new KeyValuePair<string,string>("enrolments[0][courseid]",courseid)
+    };
+
+    post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
 //user methods
@@ -84,7 +108,8 @@ app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
     newUser.lastname = lastname;
     newUser.email = email;
     var data = User.userToData(newUser);
-    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    post(wstoken,wsfunction,moodlewsrestformat,data);
+    //client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     response.WriteAsync(data.ToString());
 });
 
@@ -141,7 +166,8 @@ app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =
 */
 
 //Group methods
-app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => {
+app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => 
+{
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_group_add_group_members";
     var groupid = request.Query["groupid"];
@@ -154,11 +180,11 @@ app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) 
         new KeyValuePair<string,string>("members[0][userid]",userid)
     };
 
-    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
-    
+    post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
-app.MapGet("/removeuserfromgroup", async(HttpRequest request, HttpResponse response) => {
+app.MapGet("/removeuserfromgroup", async(HttpRequest request, HttpResponse response) => 
+{
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_group_delete_group_members";
     var groupid = request.Query["groupid"];
@@ -171,7 +197,7 @@ app.MapGet("/removeuserfromgroup", async(HttpRequest request, HttpResponse respo
         new KeyValuePair<string,string>("members[0][userid]",userid)
     };
 
-    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
 
@@ -189,7 +215,8 @@ app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) 
         new KeyValuePair<string, string>("username",username),
         new KeyValuePair<string,string>("email",email)
     };
-    var reply = await client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    post(wstoken,wsfunction,moodlewsrestformat,data);
+    //var reply = await client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     reply.EnsureSuccessStatusCode();
     string replyBody = await reply.Content.ReadAsStringAsync();
     Console.WriteLine(replyBody);
@@ -273,3 +300,4 @@ public class MoodleUserlistObject
     public UserElement[] users { get; set; }
     public object[] warnings { get; set; }
 }
+
