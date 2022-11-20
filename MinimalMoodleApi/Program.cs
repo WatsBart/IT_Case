@@ -11,28 +11,36 @@ HttpClient client = new HttpClient();
 var uri = "http://localhost/webservice/rest/server.php";
 
 //course methods
-app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
+{
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_get_courses";
     var moodlewsrestformat = "json";
     var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
-    try{
+    try
+    {
         var message = await JsonSerializer.DeserializeAsync<List<Course>>(await stringTask);
-        if(message is not null){
-            foreach(var repo in message){
-                response.WriteAsync(repo.shortname+"\n");
-                response.WriteAsync(repo.fullname+"\n");
+        if (message is not null)
+        {
+            foreach (var repo in message)
+            {
+                response.WriteAsync(repo.shortname + "\n");
+                response.WriteAsync(repo.fullname + "\n");
             }
-        }        
-    }catch(Exception e){
+        }
+    }
+    catch (Exception e)
+    {
         var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
-        if(message is not null){
+        if (message is not null)
+        {
             Console.WriteLine(message.ToString());
         }
     }
 });
 
-app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) =>
+{
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_create_courses";
     var fullname = request.Query["fullname"];
@@ -45,11 +53,12 @@ app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) =
     newCourse.categoryid = categoryId;
     //string course = Course.courseToString(newCourse);
     var data = Course.courseToData(newCourse);
-    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}",new FormUrlEncodedContent(data));
+    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     response.WriteAsync($"Je hebt {newCourse.fullname} toegevoegd.");
 });
 
-app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =>
+{
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_delete_courses";
     var id = request.Query["id"];
@@ -58,7 +67,8 @@ app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =
 });
 
 //user methods
-app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
+{
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_create_users";
     var username = request.Query["username"];
@@ -74,11 +84,65 @@ app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) => 
     newUser.lastname = lastname;
     newUser.email = email;
     var data = User.userToData(newUser);
-    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}",new FormUrlEncodedContent(data));
+    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     response.WriteAsync(data.ToString());
 });
 
-app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/changeusersuspendstatus", async(HttpRequest request, HttpResponse response) =>
+{
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_get_users";
+    var username = request.Query["username"];
+    
+    var client = new HttpClient();
+    var stringTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&criteria[0][key]=username&criteria[0][value]={username}&moodlewsrestformat=json");
+    var message = await stringTask;
+    var jsonString = await message.Content.ReadAsStringAsync();
+    MoodleUserlistObject userlist = JsonSerializer.Deserialize<MoodleUserlistObject>(jsonString);
+    
+    if (userlist.users[0].suspended == false)
+    {
+        var suspendTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=1&moodlewsrestformat=json");
+        var suspendMessage = await suspendTask;
+        var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
+        response.WriteAsync($"{username} suspended");
+    }else
+    {
+        var suspendTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=0&moodlewsrestformat=json");
+        var suspendMessage = await suspendTask;
+        var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
+        response.WriteAsync($"{username} unsuspended");
+    }
+});
+
+/*
+DELETE NOG NIET, ik wil vragen aan mr verbesselt of het beter is dit op te splitsen in twee
+
+app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =>
+{
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_get_users";
+    var username = request.Query["username"];
+    
+    var client = new HttpClient();
+    var stringTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&criteria[0][key]=username&criteria[0][value]={username}&moodlewsrestformat=json");
+    var message = await stringTask;
+    var jsonString = await message.Content.ReadAsStringAsync();    
+    MoodleUserlistObject userlist = JsonSerializer.Deserialize<MoodleUserlistObject>(jsonString);
+    
+    if (userlist.users[0].suspended == true)
+    {
+        var suspendTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=0&moodlewsrestformat=json");
+        var suspendMessage = await suspendTask;
+        var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
+        response.WriteAsync($"{username} unsuspended");
+    }
+});
+*/
+//Password Reset
+
+app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) =>
+{
     var wstoken = request.Query["wstoken"];
     var username = request.Query["username"];
     var email = request.Query["email"];
@@ -89,7 +153,7 @@ app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) 
         new KeyValuePair<string, string>("username",username),
         new KeyValuePair<string,string>("email",email)
     };
-    var reply = await client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}",new FormUrlEncodedContent(data));
+    var reply = await client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     reply.EnsureSuccessStatusCode();
     string replyBody = await reply.Content.ReadAsStringAsync();
     Console.WriteLine(replyBody);
@@ -97,44 +161,79 @@ app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) 
 
 app.Run();
 
-public class Course{
-                public string shortname {get;set;} = "";
-                public int categoryid {get;set;}
-                public string fullname {get;set;} = "";
-                public static KeyValuePair<string,string>[][] courseToString(Course[] courses){
-                    var data = new KeyValuePair<string,string>[3][];
-                    for(int i = 0;i < courses.Length;i++){
-                        data[i] = courseToData(courses[i]);
-                    }
-                    return data;
-                } 
+public class Course
+{
+    public string shortname { get; set; } = "";
+    public int categoryid { get; set; }
+    public string fullname { get; set; } = "";
+    public static KeyValuePair<string, string>[][] courseToString(Course[] courses)
+    {
+        var data = new KeyValuePair<string, string>[3][];
+        for (int i = 0; i < courses.Length; i++)
+        {
+            data[i] = courseToData(courses[i]);
+        }
+        return data;
+    }
 
-                public static KeyValuePair<string,string>[] courseToData(Course course){
-                    return new[]
-                        {
+    public static KeyValuePair<string, string>[] courseToData(Course course)
+    {
+        return new[]
+            {
                         new KeyValuePair<string, string>("courses[0][fullname]",course.fullname),
                         new KeyValuePair<string, string>("courses[0][shortname]",course.shortname),
                         new KeyValuePair<string, string>("courses[0][categoryid]",course.categoryid.ToString())
                     };
-                } 
+    }
 }
 
 public class User
-        {
-            public string username { get; set; }
-            public string password { get; set; }
-            public string firstname { get; set; }
-            public string lastname { get; set; }
-            public string email { get; set; }
+{
+    public string username { get; set; }
+    public string password { get; set; }
+    public string firstname { get; set; }
+    public string lastname { get; set; }
+    public string email { get; set; }
 
-            public static KeyValuePair<string,string>[] userToData(User user){
-                    return new[]
-                    {
+    public static KeyValuePair<string, string>[] userToData(User user)
+    {
+        return new[]
+        {
                         new KeyValuePair<string, string>("users[0][username]",user.username),
                         new KeyValuePair<string, string>("users[0][password]",user.password),
                         new KeyValuePair<string, string>("users[0][firstname]",user.firstname),
                         new KeyValuePair<string, string>("users[0][lastname]",user.lastname),
                         new KeyValuePair<string, string>("users[0][email]",user.email),
                     };
-                } 
-        }
+    }
+}
+
+public class UserElement
+{
+    public long? id { get; set; }
+    public string? username { get; set; }
+    public string? firstname { get; set; }
+    public string? lastname { get; set; }
+    public string? fullname { get; set; }
+    public string? email { get; set; }
+    public string? department { get; set; }
+    public long? firstaccess { get; set; }
+    public long? lastaccess { get; set; }
+    public string? auth { get; set; }
+    public bool? suspended { get; set; }
+    public bool? confirmed { get; set; }
+    public string? lang { get; set; }
+    public string? theme { get; set; }
+    public string? timezone { get; set; }
+    public long? mailformat { get; set; }
+    public string? description { get; set; }
+    public long? descriptionformat { get; set; }
+    public Uri? profileimageurlsmall { get; set; }
+    public Uri? profileimageurl { get; set; }
+}
+
+public class MoodleUserlistObject
+{
+    public UserElement[] users { get; set; }
+    public object[] warnings { get; set; }
+}
