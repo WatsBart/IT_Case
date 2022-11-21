@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "uhAu2OuQILfY4wi5Q6Ww9tuLZfmvWfK+FXc0FVWmj8X8YQ3taj2iAM6uCGCej5quGFvyjFeYFP1DycCzn+aHEA==",
-  "success": false,
-  "projectFilePath": "c:\\Users\\power\\OneDrive\\Bureaublad\\MoodleApi\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
+  "dgSpecHash": "YNukGRCvNO6N2odrOStFP1SzkFJTQn5DgX1zIDq9KUvTRNp47gqtw5+EnimzVHIOWaFoj91IKtlDbDud/kqT+A==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\power\\OneDrive\\Bureaublad\\MoodleApi\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\power\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.10\\microsoft.aspnetcore.authentication.jwtbearer.6.0.10.nupkg.sha512",
-    "C:\\Users\\power\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.0\\microsoft.aspnetcore.openapi.7.0.0.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\6.10.0\\microsoft.identitymodel.jsonwebtokens.6.10.0.nupkg.sha512",
@@ -21,15 +20,5 @@
     "C:\\Users\\power\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.10.0\\system.identitymodel.tokens.jwt.6.10.0.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1202",
-      "level": "Error",
-      "message": "Package Microsoft.AspNetCore.OpenApi 7.0.0 is not compatible with net6.0 (.NETCoreApp,Version=v6.0). Package Microsoft.AspNetCore.OpenApi 7.0.0 supports: net7.0 (.NETCoreApp,Version=v7.0)",
-      "libraryId": "Microsoft.AspNetCore.OpenApi",
-      "targetGraphs": [
-        "net6.0"
-      ]
-    }
-  ]
+  "logs": []
 }
