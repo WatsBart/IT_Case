@@ -7,12 +7,13 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 HttpClient client = new HttpClient();
+
 
 
 //adjust authentication settings
@@ -30,12 +31,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 //add authorization to endpoints
 builder.Services.AddAuthorization();
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-
-app.MapGet("/createToken",
-[AllowAnonymous] (HttpRequest request) =>{
-    var username = request.Query["username"];
-    var password = request.Query["password"];
+app.MapPost("/createToken",
+ [AllowAnonymous] (HttpRequest request,TokenUser userz) =>{
+    var username = userz.UserName;
+    var password = userz.Password;
 
     if (username == "test" && password == "test123")
     {
@@ -48,8 +52,8 @@ app.MapGet("/createToken",
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Email, password),
+                new Claim(JwtRegisteredClaimNames.Sub, userz.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, userz.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti,
                 Guid.NewGuid().ToString())
              }),
@@ -70,9 +74,9 @@ app.MapGet("/createToken",
 });
 
 //token security testing function
-app.MapGet("/securityTest", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse response) => {
     response.WriteAsync("hello world");
-}).RequireAuthorization();
+});
 
 
 
@@ -96,7 +100,7 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => 
             Console.WriteLine(message.ToString());
         }
     }
-}).RequireAuthorization();
+});
 
 app.MapPost("/createcourse", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
@@ -246,7 +250,7 @@ public class User
                     return stringUsers;
                 } 
         }
-        public class TokenUser
+record TokenUser
 {
     public string UserName { get; set; }
     public string Password { get; set; }
