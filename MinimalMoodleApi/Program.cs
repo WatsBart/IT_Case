@@ -30,10 +30,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
-app.MapPost("/createToken",
-[AllowAnonymous] (TokenUser user) =>
-{
-    if (user.UserName == "test" && user.Password == "test123")
+
+app.MapGet("/createToken",
+[AllowAnonymous] (HttpRequest request) =>{
+    var username = request.Query["username"];
+    var password = request.Query["password"];
+
+    if (username == "test" && password == "test123")
     {
         var issuer = builder.Configuration["Jwt:Issuer"];
         var audience = builder.Configuration["Jwt:Audience"];
@@ -44,8 +47,8 @@ app.MapPost("/createToken",
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Email, password),
                 new Claim(JwtRegisteredClaimNames.Jti,
                 Guid.NewGuid().ToString())
              }),
@@ -70,6 +73,8 @@ app.MapGet("/securityTest", async (HttpRequest request, HttpResponse response) =
     response.WriteAsync("hello world");
 }).RequireAuthorization();
 
+
+
 //course methods
 app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
@@ -80,9 +85,8 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => 
         var message = await JsonSerializer.DeserializeAsync<List<Course>>(await stringTask);
         if(message is not null){
             foreach(var repo in message){
-                response.WriteAsync(repo.id+"\n");
-                response.WriteAsync(repo.shortname+"\n");
-                response.WriteAsync(repo.fullname+"\n");
+                response.WriteAsync($"{repo.id} {repo.fullname} {repo.shortname} \n");
+
             }
         }        
     }catch(Exception e){
@@ -91,7 +95,7 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) => 
             Console.WriteLine(message.ToString());
         }
     }
-});
+}).RequireAuthorization();
 
 app.MapPost("/createcourse", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
