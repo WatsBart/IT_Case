@@ -2,13 +2,16 @@
 using System.Net;
 using Newtonsoft.Json;
 using TodoApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TodoApi.Controllers
 {
+    
+
     [ApiController]
     public class CourseController :Controller
     {
-        public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
+        public string token = "4aedb8e394c3ac61c042c0753e4d5c57";
         //  API main page
 
         [Route("api/")]
@@ -42,7 +45,7 @@ namespace TodoApi.Controllers
             HttpClient client = new HttpClient();
             try
             {
-                client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses{sns + fns + cis+cis2}&moodlewsrestformat=json");
+                client.GetAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses{sns + fns + cis+cis2}&moodlewsrestformat=json");
             }
             catch(Exception ex)
             {
@@ -58,7 +61,7 @@ namespace TodoApi.Controllers
         public string DeleteCourse(string shortname)
         {
             HttpClient client = new HttpClient();
-            var responseTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_get_courses&moodlewsrestformat=json");
+            var responseTask = client.GetAsync($"http://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_get_courses&moodlewsrestformat=json");
             var result = responseTask.Result;
             var log = result.Content.ReadAsStringAsync();
             log.Wait();
@@ -70,7 +73,7 @@ namespace TodoApi.Controllers
                 {
                     id = (long)course[i].Id;
                     string param = $"&courseids[0]={id}";
-                    responseTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_delete_courses{param}&moodlewsrestformat=json");
+                    responseTask = client.GetAsync($"http://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_delete_courses{param}&moodlewsrestformat=json");
                     responseTask.Wait();
                     return $"Je hebt de cursus {course[i].Fullname} verwijderd. \nStatuscode: {responseTask.Result.StatusCode}";
                 }
@@ -84,7 +87,7 @@ namespace TodoApi.Controllers
         public string GetCourses()
         {
             HttpClient client = new HttpClient();
-            var responseTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_get_courses&moodlewsrestformat=json");
+            var responseTask = client.GetAsync($"http://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_get_courses&moodlewsrestformat=json");
             var result = responseTask.Result;
             var log = result.Content.ReadAsStringAsync();
             log.Wait();
