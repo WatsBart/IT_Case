@@ -6,7 +6,7 @@ using TodoApi.Models;
 namespace TodoApi.Controllers
 {
     [ApiController]
-    public class CourseController
+    public class CourseController :Controller
     {
         public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
         //  API main page
