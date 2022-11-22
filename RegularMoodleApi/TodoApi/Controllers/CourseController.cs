@@ -53,16 +53,30 @@ namespace TodoApi.Controllers
 
         //  CURSUS VERWIJDEREN (ID via course_get verkrijgen)
 
-        [Route("api/deletecourse/{id}")]
+        [Route("api/deletecourse/{shortname}")]
         [HttpGet]
-        public string DeleteCourse(int id)
+        public string DeleteCourse(string shortname)
         {
-            string ids = $"&courseids[0]={id}";
-
             HttpClient client = new HttpClient();
-            client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_delete_courses{ids}&moodlewsrestformat=json");
-
-            return $"Je hebt de cursus met id-nummer: {id} verwijderd.";
+            var responseTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_get_courses&moodlewsrestformat=json");
+            var result = responseTask.Result;
+            var log = result.Content.ReadAsStringAsync();
+            log.Wait();
+            Course[] course = JsonConvert.DeserializeObject<Course[]>(log.Result);
+            long id = -1;
+            for (int i = 0; i < course.Length; i++)
+            {
+                if (course[i].Shortname == shortname)
+                {
+                    id = (long)course[i].Id;
+                    string param = $"&courseids[0]={id}";
+                    responseTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_delete_courses{param}&moodlewsrestformat=json");
+                    responseTask.Wait();
+                    return $"Je hebt de cursus {course[i].Fullname} verwijderd. \nStatuscode: {responseTask.Result.StatusCode}";
+                }
+            }
+            return $"Cursus niet gevonden.";
+            
         }
 
         [Route("api/getcourses")]
