@@ -8,7 +8,7 @@ app.UseHttpsRedirection();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 HttpClient client = new HttpClient();
-var uri = "http://localhost/webservice/rest/server.php";
+var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
 
 var post = async(string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string,string>[] data) => {
     client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
@@ -216,10 +216,12 @@ app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) 
         new KeyValuePair<string,string>("email",email)
     };
     post(wstoken,wsfunction,moodlewsrestformat,data);
-    //var reply = await client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    /*
+    var reply = await client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     reply.EnsureSuccessStatusCode();
     string replyBody = await reply.Content.ReadAsStringAsync();
     Console.WriteLine(replyBody);
+    */
 });
 
 app.Run();
