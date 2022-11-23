@@ -7,6 +7,7 @@ namespace TodoApi.Controllers
     public class PasswordController: PasswordReset
     {
         private string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
+        public string uri = "http://localhost/webservice/rest/server.php?";
 
         [Route("api/passwordreset/{email}")]
         [HttpGet]
@@ -26,7 +27,7 @@ namespace TodoApi.Controllers
 
             try
             {
-                client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_auth_request_password{ems}&moodlewsrestformat=json");
+                client.GetAsync($"{uri}wstoken={token}&wsfunction=core_auth_request_password{ems}&moodlewsrestformat=json");
             }
             catch(Exception e)
             {
