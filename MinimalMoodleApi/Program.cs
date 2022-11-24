@@ -43,6 +43,7 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+HttpClientHandler clientHandler = new HttpClientHandler();
 
 app.MapPost("/createToken",
  [AllowAnonymous] (HttpRequest request,TokenUser userz) =>{
@@ -180,12 +181,8 @@ app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
     newUser.lastname = lastname;
     newUser.email = email;
     string user = newUser.ToString();
-    HttpClientHandler clientHandler = new HttpClientHandler();
-    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-
-    // Pass the handler to httpclient
-    HttpClient client = new HttpClient(clientHandler);
     
+    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
     await client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
     response.WriteAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
     var data = User.userToData(newUser);
