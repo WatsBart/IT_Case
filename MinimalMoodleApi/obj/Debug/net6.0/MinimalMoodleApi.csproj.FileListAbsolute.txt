@@ -80,6 +80,15 @@ C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CopyComplete
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
+<<<<<<< HEAD
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+=======
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\appsettings.Development.json
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\appsettings.json
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\package-lock.json
@@ -108,3 +117,4 @@ C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.pdb
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
+>>>>>>> 5053151dab2ebcb4bc154748a06ab2e63f831258

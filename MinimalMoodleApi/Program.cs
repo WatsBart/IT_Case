@@ -1,9 +1,16 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
-app.UseHttpsRedirection();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
@@ -13,6 +20,73 @@ var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
 var post = async(string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string,string>[] data) => {
     client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
 };
+
+
+
+//adjust authentication settings
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options=>{
+    options.TokenValidationParameters = new TokenValidationParameters(){
+        ValidateActor = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+//add authorization to endpoints
+builder.Services.AddAuthorization();
+var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseHttpsRedirection();
+
+app.MapPost("/createToken",
+ [AllowAnonymous] (HttpRequest request,TokenUser userz) =>{
+    var username = userz.UserName;
+    var password = userz.Password;
+
+    if (username == "test" && password == "test123")
+    {
+        var issuer = builder.Configuration["Jwt:Issuer"];
+        var audience = builder.Configuration["Jwt:Audience"];
+        var key = Encoding.ASCII.GetBytes
+        (builder.Configuration["Jwt:Key"]);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim("Id", Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, userz.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, userz.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti,
+                Guid.NewGuid().ToString())
+             }),
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            Issuer = issuer,
+            Audience = audience,
+            SigningCredentials = new SigningCredentials
+            (new SymmetricSecurityKey(key),
+            SecurityAlgorithms.HmacSha512Signature)
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var jwtToken = tokenHandler.WriteToken(token);
+        var stringToken = tokenHandler.WriteToken(token);
+        return Results.Ok(stringToken);
+    }
+    return Results.Unauthorized();
+});
+
+//token security testing function
+app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse response) => {
+    response.WriteAsync("hello world");
+});
+
+
 
 //course methods
 app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
@@ -24,12 +98,10 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
     try
     {
         var message = await JsonSerializer.DeserializeAsync<List<Course>>(await stringTask);
-        if (message is not null)
-        {
-            foreach (var repo in message)
-            {
-                response.WriteAsync(repo.shortname + "\n");
-                response.WriteAsync(repo.fullname + "\n");
+        if(message is not null){
+            foreach(var repo in message){
+                response.WriteAsync($" {repo.fullname} {repo.shortname} \n");
+
             }
         }
     }
@@ -107,9 +179,18 @@ app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
     newUser.firstname = firstname;
     newUser.lastname = lastname;
     newUser.email = email;
+    string user = newUser.ToString();
+    HttpClientHandler clientHandler = new HttpClientHandler();
+    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+    // Pass the handler to httpclient
+    HttpClient client = new HttpClient(clientHandler);
+    
+    await client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
+    response.WriteAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
     var data = User.userToData(newUser);
     post(wstoken,wsfunction,moodlewsrestformat,data);
-    //client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     response.WriteAsync(data.ToString());
 });
 
@@ -173,7 +254,13 @@ app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) 
     var groupid = request.Query["groupid"];
     var userid = request.Query["userid"];
     var moodlewsrestformat = "json";
-
+});
+/*app.MapGet("/deleteuser", async (HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_delete_users";
+    var id = request.Query["id"];
+    var moodlewsrestformat = "json";
+    await client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&userids[0]={id}");
     var data = new[]
     {
         new KeyValuePair<string,string>("members[0][groupid]",groupid),
@@ -181,7 +268,7 @@ app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) 
     };
 
     post(wstoken,wsfunction,moodlewsrestformat,data);
-});
+});*/
 
 app.MapGet("/removeuserfromgroup", async(HttpRequest request, HttpResponse response) => 
 {
@@ -224,6 +311,28 @@ app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) 
     */
 });
 
+app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_get_users";
+    var moodlewsrestformat = "json";
+    var stringTask = client.GetStreamAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
+    try{
+        var message = await JsonSerializer.DeserializeAsync<List<User>>(await stringTask);
+        if(message is not null){
+            foreach(var repo in message){
+                response.WriteAsync(repo.username+"\n");
+                response.WriteAsync(repo.password+"\n");
+            }
+        }        
+    }catch(Exception e){
+        var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
+        if(message is not null){
+            Console.WriteLine(message.ToString());
+        }
+    }
+});
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
 
 public class Course
@@ -303,3 +412,8 @@ public class MoodleUserlistObject
     public object[] warnings { get; set; }
 }
 
+record TokenUser
+{
+    public string UserName { get; set; }
+    public string Password { get; set; }
+}
