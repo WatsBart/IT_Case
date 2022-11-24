@@ -118,3 +118,10 @@ C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
 C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
 >>>>>>> 5053151dab2ebcb4bc154748a06ab2e63f831258
+C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
