@@ -1,14 +1,9 @@
 {
   "version": 2,
-<<<<<<< HEAD
   "dgSpecHash": "YNukGRCvNO6N2odrOStFP1SzkFJTQn5DgX1zIDq9KUvTRNp47gqtw5+EnimzVHIOWaFoj91IKtlDbDud/kqT+A==",
-=======
-  "dgSpecHash": "Fa5H7Z4dScrOSsPwXHBLMBTgDp3FjeV4rGVajYVk0Wrg7HWn3cUh2dppRWzoAedsk2jF40CAk5J8ml2r50DkNQ==",
->>>>>>> 5053151dab2ebcb4bc154748a06ab2e63f831258
   "success": true,
-  "projectFilePath": "C:\\Users\\bartw\\Documents\\ap\\jaar2\\IT_Case\\git\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
+  "projectFilePath": "C:\\Users\\power\\OneDrive\\Bureaublad\\MoodleApi\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
   "expectedPackageFiles": [
-<<<<<<< HEAD
     "C:\\Users\\power\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.10\\microsoft.aspnetcore.authentication.jwtbearer.6.0.10.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
@@ -24,14 +19,13 @@
     "C:\\Users\\power\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.10.0\\system.identitymodel.tokens.jwt.6.10.0.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512"
-=======
-    "C:\\Users\\bartw\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
-    "C:\\Users\\bartw\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
-    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
-    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
-    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
-    "C:\\Users\\bartw\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
->>>>>>> 5053151dab2ebcb4bc154748a06ab2e63f831258
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\Users\\power\\OneDrive\\Bureaublad\\MoodleApi\\IT_Case\\MinimalMoodleApi\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

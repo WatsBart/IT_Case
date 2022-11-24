@@ -163,7 +163,7 @@ app.MapGet("/addusertocourse", async(HttpRequest request, HttpResponse response)
 });
 
 //user methods
-/*app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_create_users";
@@ -179,7 +179,7 @@ app.MapGet("/addusertocourse", async(HttpRequest request, HttpResponse response)
     newUser.firstname = firstname;
     newUser.lastname = lastname;
     newUser.email = email;
-    string user = User.userToString(newUser);
+    string user = newUser.ToString();
     HttpClientHandler clientHandler = new HttpClientHandler();
     clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
@@ -190,9 +190,9 @@ app.MapGet("/addusertocourse", async(HttpRequest request, HttpResponse response)
     response.WriteAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
     var data = User.userToData(newUser);
     post(wstoken,wsfunction,moodlewsrestformat,data);
-    //client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
+    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
     response.WriteAsync(data.ToString());
-});*/
+});
 
 app.MapGet("/changeusersuspendstatus", async(HttpRequest request, HttpResponse response) =>
 {
@@ -247,7 +247,7 @@ app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =
 */
 
 //Group methods
-/*app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => 
+app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => 
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_group_add_group_members";
@@ -255,7 +255,7 @@ app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =
     var userid = request.Query["userid"];
     var moodlewsrestformat = "json";
 });
-app.MapGet("/deleteuser", async (HttpRequest request, HttpResponse response) => {
+/*app.MapGet("/deleteuser", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_delete_users";
     var id = request.Query["id"];
