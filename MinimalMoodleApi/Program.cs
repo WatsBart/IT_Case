@@ -10,18 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-HttpClient client = new HttpClient();
+
+HttpClientHandler clientHandler = new HttpClientHandler();
+clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+// Pass the handler to httpclient
+HttpClient client = new HttpClient(clientHandler);
+
 var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
 
 var post = async(string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string,string>[] data) => {
     client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
 };
-
-
 
 //adjust authentication settings
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options=>{
@@ -43,7 +44,6 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
-HttpClientHandler clientHandler = new HttpClientHandler();
 
 app.MapPost("/createToken",
  [AllowAnonymous] (HttpRequest request,TokenUser userz) =>{
@@ -87,8 +87,6 @@ app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse 
     response.WriteAsync("hello world");
 });
 
-
-
 //course methods
 app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
 {
@@ -128,11 +126,12 @@ app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) =
     newCourse.fullname = fullname;
     newCourse.shortname = shortname;
     newCourse.categoryid = categoryId;
-    //string course = Course.courseToString(newCourse);
+
     var data = Course.courseToData(newCourse);
     post(wstoken,wsfunction,moodlewsrestformat,data);
+
     //client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
-    response.WriteAsync($"Je hebt {newCourse.fullname} toegevoegd.");
+    //response.WriteAsync($"Je hebt {newCourse.fullname} toegevoegd.");
 });
 
 app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =>
@@ -180,15 +179,9 @@ app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
     newUser.firstname = firstname;
     newUser.lastname = lastname;
     newUser.email = email;
-    string user = newUser.ToString();
-    
-    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-    await client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
-    response.WriteAsync($"https://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}"+user);
     var data = User.userToData(newUser);
     post(wstoken,wsfunction,moodlewsrestformat,data);
-    client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
-    response.WriteAsync(data.ToString());
+    //response.WriteAsync(data.ToString());
 });
 
 app.MapGet("/changeusersuspendstatus", async(HttpRequest request, HttpResponse response) =>
@@ -205,13 +198,13 @@ app.MapGet("/changeusersuspendstatus", async(HttpRequest request, HttpResponse r
     
     if (userlist.users[0].suspended == false)
     {
-        var suspendTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=1&moodlewsrestformat=json");
+        var suspendTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=1&moodlewsrestformat=json");
         var suspendMessage = await suspendTask;
         var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
         response.WriteAsync($"{username} suspended");
     }else
     {
-        var suspendTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=0&moodlewsrestformat=json");
+        var suspendTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=0&moodlewsrestformat=json");
         var suspendMessage = await suspendTask;
         var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
         response.WriteAsync($"{username} unsuspended");
@@ -244,14 +237,21 @@ app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =
 */
 
 //Group methods
-app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => 
-{
+app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_group_add_group_members";
     var groupid = request.Query["groupid"];
     var userid = request.Query["userid"];
     var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("members[0][groupid]",groupid),
+        new KeyValuePair<string,string>("members[0][userid]",userid)
+    };
+    post(wstoken,wsfunction,moodlewsrestformat,data);
 });
+
 /*app.MapGet("/deleteuser", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_delete_users";
@@ -300,19 +300,13 @@ app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) 
         new KeyValuePair<string,string>("email",email)
     };
     post(wstoken,wsfunction,moodlewsrestformat,data);
-    /*
-    var reply = await client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
-    reply.EnsureSuccessStatusCode();
-    string replyBody = await reply.Content.ReadAsStringAsync();
-    Console.WriteLine(replyBody);
-    */
 });
 
 app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_get_users";
     var moodlewsrestformat = "json";
-    var stringTask = client.GetStreamAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
+    var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
     try{
         var message = await JsonSerializer.DeserializeAsync<List<User>>(await stringTask);
         if(message is not null){
