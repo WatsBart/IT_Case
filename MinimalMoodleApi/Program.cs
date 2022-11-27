@@ -162,6 +162,25 @@ app.MapPost("/addusertocourse", async([FromBody] dataEnrolmentObject dataObject)
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
+app.MapPost("/removeuserfromcourse", async([FromBody] dataEnrolmentObject dataObject) => 
+{
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "enrol_manual_unenrol_users";
+    var roleid = dataObject.roleid;
+    var courseid = dataObject.courseid;
+    var userid = dataObject.userid;
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("enrolments[0][roleid]",roleid.ToString()),
+        new KeyValuePair<string,string>("enrolments[0][userid]",userid.ToString()),
+        new KeyValuePair<string,string>("enrolments[0][courseid]",courseid.ToString())
+    };
+
+    post(wstoken,wsfunction,moodlewsrestformat,data);
+});
+
 //user methods
 app.MapPost("/createuser", async ([FromBody] dataUserObject dataObject) =>
 {
@@ -182,58 +201,6 @@ app.MapPost("/createuser", async ([FromBody] dataUserObject dataObject) =>
     var data = User.userToData(newUser);
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
-
-app.MapGet("/changeusersuspendstatus", async(HttpRequest request, HttpResponse response) =>
-{
-    var wstoken = request.Query["wstoken"];
-    var wsfunction = "core_user_get_users";
-    var username = request.Query["username"];
-    
-    var client = new HttpClient();
-    var stringTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&criteria[0][key]=username&criteria[0][value]={username}&moodlewsrestformat=json");
-    var message = await stringTask;
-    var jsonString = await message.Content.ReadAsStringAsync();
-    MoodleUserlistObject userlist = JsonSerializer.Deserialize<MoodleUserlistObject>(jsonString);
-    
-    if (userlist.users[0].suspended == false)
-    {
-        var suspendTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=1&moodlewsrestformat=json");
-        var suspendMessage = await suspendTask;
-        var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
-        response.WriteAsync($"{username} suspended");
-    }else
-    {
-        var suspendTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=0&moodlewsrestformat=json");
-        var suspendMessage = await suspendTask;
-        var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
-        response.WriteAsync($"{username} unsuspended");
-    }
-});
-
-/*
-DELETE NOG NIET, ik wil vragen aan mr verbesselt of het beter is dit op te splitsen in twee
-
-app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =>
-{
-    var wstoken = request.Query["wstoken"];
-    var wsfunction = "core_user_get_users";
-    var username = request.Query["username"];
-    
-    var client = new HttpClient();
-    var stringTask = client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&criteria[0][key]=username&criteria[0][value]={username}&moodlewsrestformat=json");
-    var message = await stringTask;
-    var jsonString = await message.Content.ReadAsStringAsync();    
-    MoodleUserlistObject userlist = JsonSerializer.Deserialize<MoodleUserlistObject>(jsonString);
-    
-    if (userlist.users[0].suspended == true)
-    {
-        var suspendTask = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={wstoken}&wsfunction=core_user_update_users&users[0][id]={userlist.users[0].id}&users[0][suspended]=0&moodlewsrestformat=json");
-        var suspendMessage = await suspendTask;
-        var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
-        response.WriteAsync($"{username} unsuspended");
-    }
-});
-*/
 
 //Group methods
 app.MapPost("/addusertogroup", async([FromBody] dataGroupObject dataObject) => {
