@@ -1,67 +1,3 @@
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\appsettings.Development.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\appsettings.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.exe
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.deps.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.runtimeconfig.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.pdb
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.OpenApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.AssemblyReference.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfoInputs.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfo.cs
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CoreCompileInputs.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.build.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.development.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\scopedcss\bundle\MinimalMoodleApi.styles.css
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CopyComplete
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\refint\MinimalMoodleApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.pdb
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\MinimalApi\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\appsettings.Development.json
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\appsettings.json
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.exe
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.deps.json
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.runtimeconfig.json
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.pdb
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.OpenApi.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.AssemblyReference.cache
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.GeneratedMSBuildEditorConfig.editorconfig
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfoInputs.cache
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfo.cs
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CoreCompileInputs.cache
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cs
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cache
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.build.json
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.development.json
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\scopedcss\bundle\MinimalMoodleApi.styles.css
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CopyComplete
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\refint\MinimalMoodleApi.dll
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.pdb
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
-D:\AP\Jaar 2\cvo\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.AssemblyReference.cache
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfoInputs.cache
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfo.cs
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CoreCompileInputs.cache
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.dll
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\refint\MinimalMoodleApi.dll
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.pdb
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\appsettings.Development.json
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\appsettings.json
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\package-lock.json
@@ -70,58 +6,30 @@ C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.runtimeconfig.json
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.dll
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.pdb
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.OpenApi.dll
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.build.json
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.development.json
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\scopedcss\bundle\MinimalMoodleApi.styles.css
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CopyComplete
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
-C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
-<<<<<<< HEAD
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
-=======
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\appsettings.Development.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\appsettings.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\package-lock.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.exe
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.deps.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.runtimeconfig.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\MinimalMoodleApi.pdb
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.OpenApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.AssemblyReference.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfoInputs.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfo.cs
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CoreCompileInputs.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.build.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.development.json
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\scopedcss\bundle\MinimalMoodleApi.styles.css
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CopyComplete
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\refint\MinimalMoodleApi.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.pdb
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll
->>>>>>> 5053151dab2ebcb4bc154748a06ab2e63f831258
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
-C:\Users\bartw\Documents\ap\jaar2\IT_Case\git\MinimalMoodleApi\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.AssemblyReference.cache
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfoInputs.cache
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.AssemblyInfo.cs
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CoreCompileInputs.cache
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.build.json
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\staticwebassets.development.json
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\scopedcss\bundle\MinimalMoodleApi.styles.css
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.csproj.CopyComplete
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\refint\MinimalMoodleApi.dll
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.pdb
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\MinimalMoodleApi.genruntimeconfig.cache
+C:\Users\power\OneDrive\Bureaublad\MoodleApi\IT_Case\MinimalMoodleApi\obj\Debug\net6.0\ref\MinimalMoodleApi.dll

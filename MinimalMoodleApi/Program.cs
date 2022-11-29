@@ -5,10 +5,38 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Linq;
+using Microsoft.OpenApi.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options=>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
+    {
+        Scheme = "Bearer",
+        BearerFormat ="JWT",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Description = "Bearer Authentication with JWT Token",
+        Type = SecuritySchemeType.Http
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference{
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+            
+    });
+});
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
@@ -18,7 +46,7 @@ clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, 
 // Pass the handler to httpclient
 HttpClient client = new HttpClient(clientHandler);
 
-var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
+var uri = "https://localhost/webservice/rest/server.php";
 
 var post = async(string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string,string>[] data) => {
     client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
@@ -41,13 +69,40 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
-app.MapPost("/createToken",
- [AllowAnonymous] (HttpRequest request,TokenUser userz) =>{
-    var username = userz.UserName;
+app.MapPost("/createToken",(TokenUser userz) =>{
+
+    
+    if (!string.IsNullOrEmpty(userz.UserName)&&!string.IsNullOrEmpty(userz.Password))
+    {
+        var loggedInUser =  UserRepository.Users.FirstOrDefault(o=> o.Username.Equals(userz.UserName, StringComparison.OrdinalIgnoreCase)&& o.Password.Equals(userz.Password));;
+        if (loggedInUser is null) return Results.NotFound("user not found");
+        
+        var claims = new[]{
+            new Claim(ClaimTypes.NameIdentifier,loggedInUser.Username),
+            new Claim(ClaimTypes.Role, loggedInUser.Role)
+        };
+        
+         var token = new JwtSecurityToken(
+            issuer: builder.Configuration["Jwt:Issuer"],
+            audience: builder.Configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(60),
+            notBefore: DateTime.UtcNow,
+            signingCredentials: new SigningCredentials
+            (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            SecurityAlgorithms.HmacSha256)
+        );
+         var tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
+         return Results.Ok(tokenstring);
+    }
+    return Results.Unauthorized();
+    // commentaar NIET DELETEN !!!!
+    /*var username = userz.UserName;
     var password = userz.Password;
 
     if (username == "test" && password == "test123")
@@ -79,7 +134,7 @@ app.MapPost("/createToken",
         var stringToken = tokenHandler.WriteToken(token);
         return Results.Ok(stringToken);
     }
-    return Results.Unauthorized();
+    return Results.Unauthorized();*/
 });
 
 //token security testing function
@@ -88,9 +143,9 @@ app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse 
 });
 
 //course methods
-app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator")] async (HttpRequest request, HttpResponse response,string token) =>
 {
-    var wstoken = request.Query["wstoken"];
+    var wstoken = token;
     var wsfunction = "core_course_get_courses";
     var moodlewsrestformat = "json";
     var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
@@ -102,7 +157,9 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
                 response.WriteAsync($" {repo.fullname} {repo.shortname} \n");
 
             }
+            
         }
+
     }
     catch (Exception e)
     {
@@ -322,6 +379,8 @@ app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
         }
     }
 });
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();
@@ -403,8 +462,31 @@ public class MoodleUserlistObject
     public object[] warnings { get; set; }
 }
 
-record TokenUser
+public class TokenUser
 {
     public string UserName { get; set; }
     public string Password { get; set; }
+}
+public class UserInfo{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Role { get; set; }
+}
+
+public class UserRepository{
+    public static List<UserInfo> Users = new(){
+        new() {Username = "test", Password = "123",Role ="Administrator"}
+    };
+}
+
+public interface IUserServ{
+    public UserInfo Get(TokenUser user);
+}
+
+public class UserService:IUserServ{
+    public UserInfo Get(TokenUser userlogin){
+        UserInfo user = UserRepository.Users.FirstOrDefault(o=> o.Username.Equals(userlogin.UserName, StringComparison.OrdinalIgnoreCase)&& o.Password.Equals(userlogin.Password));
+
+        return user;
+    }
 }
