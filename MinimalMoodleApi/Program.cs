@@ -475,7 +475,8 @@ public class UserInfo{
 
 public class UserRepository{
     public static List<UserInfo> Users = new(){
-        new() {Username = "test", Password = "123",Role ="Administrator"}
+        new() {Username = "test", Password = "123",Role ="Administrator"},
+        new(){Username = "fake", Password = "account",Role = "fake"}
     };
 }
 
