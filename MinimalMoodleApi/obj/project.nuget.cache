@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YNukGRCvNO6N2odrOStFP1SzkFJTQn5DgX1zIDq9KUvTRNp47gqtw5+EnimzVHIOWaFoj91IKtlDbDud/kqT+A==",
+  "dgSpecHash": "5CkMe1VYiECbPj5nSs0nQAb/jWPWGamw+y4STgwupKbsKxkUeOUtHorCYnJPkc1sLWS+7BGsgMxq//ClYw+k2g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\power\\OneDrive\\Bureaublad\\MoodleApi\\IT_Case\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
+  "projectFilePath": "C:\\Users\\power\\Desktop\\moodleAPI\\CreateUser\\MinimalMoodleApi\\MinimalMoodleApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\power\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.10\\microsoft.aspnetcore.authentication.jwtbearer.6.0.10.nupkg.sha512",
     "C:\\Users\\power\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
