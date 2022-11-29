@@ -162,20 +162,22 @@ app.MapPost("/addusertocourse", async([FromBody] dataEnrolmentObject dataObject)
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
-app.MapPost("/removeuserfromcourse", async([FromBody] dataEnrolmentObject dataObject) => 
+app.MapPost("/removestudentfromcourse", async([FromBody] dataRoleObject dataObject) => 
 {
     var wstoken = dataObject.wstoken;
-    var wsfunction = "enrol_manual_unenrol_users";
-    var roleid = dataObject.roleid;
-    var courseid = dataObject.courseid;
+    var wsfunction = "core_role_unassign_roles";
+    var roleid = "5";
+    var instanceid = dataObject.instanceid;
     var userid = dataObject.userid;
+    var contextlevel = "course";
     var moodlewsrestformat = "json";
 
     var data = new[]
     {
-        new KeyValuePair<string,string>("enrolments[0][roleid]",roleid.ToString()),
-        new KeyValuePair<string,string>("enrolments[0][userid]",userid.ToString()),
-        new KeyValuePair<string,string>("enrolments[0][courseid]",courseid.ToString())
+        new KeyValuePair<string,string>("unassignments[0][roleid]",roleid.ToString()),
+        new KeyValuePair<string,string>("unassignments[0][userid]",userid.ToString()),
+        new KeyValuePair<string,string>("unassignments[0][contextlevel]",contextlevel),
+        new KeyValuePair<string,string>("unassignments[0][instanceid]",instanceid.ToString())
     };
 
     post(wstoken,wsfunction,moodlewsrestformat,data);
@@ -384,6 +386,14 @@ public class dataEnrolmentObject
     public byte roleid { get; set; }
     public long courseid { get; set; }
     public long userid { get; set; }
+}
+
+public class dataRoleObject
+{
+    public string wstoken { get; set; }
+    public byte roleid { get; set; }
+    public long userid { get; set; }
+    public long instanceid { get; set; }
 }
 
 public class dataGroupObject
