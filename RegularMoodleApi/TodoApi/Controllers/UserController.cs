@@ -11,7 +11,7 @@ namespace TodoApi.Controllers
 
         public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
         
-        [Route(@"api/createuser/{firstName}/{lastName}/{email}/{username}/{password}")]
+        [Route(@"api/createuser")]
         [HttpPost]
         public string CreateUsers(string firstName,string lastName,string email, string password, string username)
         {
@@ -25,7 +25,6 @@ namespace TodoApi.Controllers
             };
             var json = JsonConvert.SerializeObject(newUser);
             var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            //string variables = $"&users[0][username]={newUser.Username}&users[0][password]={newUser.Password}&users[0][firstname]={newUser.Voornaam}&users[0][lastname]={newUser.Achternaam}&users[0][email]={newUser.Email}";
             using(var client = new HttpClient())
             {
                 var response = client.PostAsync($"http://localhost/webservice/rest/server.php?wstoken=1d5ecc3c89bff085d3fb31ba1db0c03a&wsfunction=core_user_create_users&users[0][username]={newUser.Username}&users[0][password]={newUser.Password}&users[0][firstname]={newUser.Voornaam}&users[0][lastname]={newUser.Achternaam}&users[0][email]={newUser.Email}&moodlewsrestformat=json",data);
