@@ -11,7 +11,7 @@ namespace TodoApi.Controllers
     [ApiController]
     public class CourseController :Controller
     {
-        public string token = "4aedb8e394c3ac61c042c0753e4d5c57";
+        public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
         //  API main page
 
         [Route("api/")]
@@ -23,35 +23,27 @@ namespace TodoApi.Controllers
 
         //  CURSUS TOEVOEGEN
 
-        [Route("api/addcourse/{fullname}/{shortname}/{categoryid}/{courseid}")]
-        [HttpGet]
+        [Route("api/addcourse")]
+        [HttpPost]
         public string CreateCourse(string fullname, string shortname, long categoryid, string courseid)
         {
-            var course = new Course();
-
-            course.Fullname = fullname;
-            course.Shortname = shortname;
-            course.Categoryid = categoryid;
-            course.Idnumber = courseid;
-
-            string fns = $"&courses[0][fullname]={course.Fullname}";
-            string sns = $"&courses[0][shortname]={course.Shortname}";
-            string cis = $"&courses[0][categoryid]={course.Categoryid}";
-            string cis2 = $"&courses[0][idnumber]={course.Idnumber}";
-            //string desc = $"&courses[0][summary]={description}";
-            //string sumformat = $"&courses[0][summaryformat]={1}";
+            var course = new Course()
+            {
+                Fullname = fullname,
+                Shortname = shortname,
+                Categoryid = categoryid,
+                Idnumber = courseid,
+            };
             
-
-            HttpClient client = new HttpClient();
-            try
+            var json = JsonConvert.SerializeObject(course);
+            var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            using(HttpClient client = new HttpClient()) 
             {
-                client.GetAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses{sns + fns + cis+cis2}&moodlewsrestformat=json");
-            }
-            catch(Exception ex)
-            {
-                return ex.Message;
-            }
-            return $"Je hebt de volgende cursus toegevoegd: {course.Fullname} ({course.Shortname})";
+                var response = client.PostAsync($"http://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses&courses[0][fullname]={course.Fullname}&courses[0][shortname]={course.Shortname}&courses[0][categoryid]={course.Categoryid}&courses[0][idnumber]={course.Idnumber}&moodlewsrestformat=json",data);
+                var result = response.Result.Content.ReadAsStringAsync();
+                result.Wait();
+                return $"Je hebt de volgende cursus toegevoegd: {course.Fullname} ({course.Shortname})\n{result.Result}";
+            };
         }
 
         //  CURSUS VERWIJDEREN (ID via course_get verkrijgen)
