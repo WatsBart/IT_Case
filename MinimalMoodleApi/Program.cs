@@ -91,8 +91,7 @@ app.MapPost("/createToken",(TokenUser userz) =>{
             issuer: builder.Configuration["Jwt:Issuer"],
             audience: builder.Configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddDays(60),
-            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.AddMinutes(1),
             signingCredentials: new SigningCredentials
             (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
             SecurityAlgorithms.HmacSha256)
@@ -143,7 +142,7 @@ app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse 
 });
 
 //course methods
-app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator")] async (HttpRequest request, HttpResponse response,string token) =>
+app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response,string token) =>
 {
     var wstoken = token;
     var wsfunction = "core_course_get_courses";
