@@ -91,7 +91,7 @@ app.MapPost("/createToken",(TokenUser userz) =>{
             issuer: builder.Configuration["Jwt:Issuer"],
             audience: builder.Configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddSeconds(20),
+            expires: DateTime.Now.AddSeconds(50),
             signingCredentials: new SigningCredentials
             (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
             SecurityAlgorithms.HmacSha256)
@@ -142,7 +142,7 @@ app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse 
 });
 
 //course methods
-app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator")] async (HttpRequest request, HttpResponse response,string token) =>
+app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response,string token) =>
 {
     var wstoken = token;
     var wsfunction = "core_course_get_courses";
@@ -170,7 +170,7 @@ app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.Au
     }
 });
 
-app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/createcourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_create_courses";
@@ -190,7 +190,7 @@ app.MapGet("/createcourse", async (HttpRequest request, HttpResponse response) =
     //response.WriteAsync($"Je hebt {newCourse.fullname} toegevoegd.");
 });
 
-app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/deletecourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_delete_courses";
@@ -199,7 +199,7 @@ app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =
     client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
 });
 
-app.MapGet("/addusertocourse", async(HttpRequest request, HttpResponse response) => 
+app.MapGet("/addusertocourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async(HttpRequest request, HttpResponse response) => 
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "enrol_manual_enrol_users";
@@ -219,7 +219,7 @@ app.MapGet("/addusertocourse", async(HttpRequest request, HttpResponse response)
 });
 
 //user methods
-app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/createuser",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_create_users";
@@ -240,7 +240,7 @@ app.MapGet("/createuser", async (HttpRequest request, HttpResponse response) =>
     //response.WriteAsync(data.ToString());
 });
 
-app.MapGet("/changeusersuspendstatus", async(HttpRequest request, HttpResponse response) =>
+app.MapGet("/changeusersuspendstatus",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async(HttpRequest request, HttpResponse response) =>
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_get_users";
@@ -293,7 +293,7 @@ app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =
 */
 
 //Group methods
-app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) => {
+app.MapGet("/addusertogroup",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async(HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_group_add_group_members";
     var groupid = request.Query["groupid"];
@@ -323,7 +323,7 @@ app.MapGet("/addusertogroup", async(HttpRequest request, HttpResponse response) 
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });*/
 
-app.MapGet("/removeuserfromgroup", async(HttpRequest request, HttpResponse response) => 
+app.MapGet("/removeuserfromgroup",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async(HttpRequest request, HttpResponse response) => 
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_group_delete_group_members";
@@ -343,7 +343,7 @@ app.MapGet("/removeuserfromgroup", async(HttpRequest request, HttpResponse respo
 
 //Password Reset
 
-app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/resetpassword",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator")] async (HttpRequest request, HttpResponse response) =>
 {
     var wstoken = request.Query["wstoken"];
     var username = request.Query["username"];
@@ -358,7 +358,7 @@ app.MapGet("/resetpassword", async (HttpRequest request, HttpResponse response) 
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
-app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/getuser",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_get_users";
     var moodlewsrestformat = "json";
@@ -474,8 +474,9 @@ public class UserInfo{
 
 public class UserRepository{
     public static List<UserInfo> Users = new(){
-        new() {Username = "test", Password = "123",Role ="Administrator"},
-        new(){Username = "fake", Password = "account",Role = "fake"}
+        new() {Username = "Admin", Password = "123",Role ="Administrator"},
+        new(){Username = "fake", Password = "account",Role = "fake"},
+        new(){Username = "Service", Password = "123",Role = "Service"}
     };
 }
 
