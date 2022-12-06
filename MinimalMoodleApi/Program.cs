@@ -77,9 +77,9 @@ app.UseHttpsRedirection();
 app.MapPost("/createToken",(TokenUser userz) =>{
 
     
-    if (!string.IsNullOrEmpty(userz.UserName)&&!string.IsNullOrEmpty(userz.Password))
+    if (!string.IsNullOrEmpty(userz.Username)&&!string.IsNullOrEmpty(userz.Password))
     {
-        var loggedInUser =  UserRepository.Users.FirstOrDefault(o=> o.Username.Equals(userz.UserName, StringComparison.OrdinalIgnoreCase)&& o.Password.Equals(userz.Password));;
+        var loggedInUser =  UserRepository.Users.FirstOrDefault(o=> o.Username.Equals(userz.Username, StringComparison.OrdinalIgnoreCase)&& o.Password.Equals(userz.Password));;
         if (loggedInUser is null) return Results.NotFound("user not found");
         
         var claims = new[]{
@@ -463,7 +463,7 @@ public class MoodleUserlistObject
 
 public class TokenUser
 {
-    public string UserName { get; set; }
+    public string Username { get; set; }
     public string Password { get; set; }
 }
 public class UserInfo{
@@ -478,16 +478,4 @@ public class UserRepository{
         new(){Username = "fake", Password = "account",Role = "fake"},
         new(){Username = "Service", Password = "123",Role = "Service"}
     };
-}
-
-public interface IUserServ{
-    public UserInfo Get(TokenUser user);
-}
-
-public class UserService:IUserServ{
-    public UserInfo Get(TokenUser userlogin){
-        UserInfo user = UserRepository.Users.FirstOrDefault(o=> o.Username.Equals(userlogin.UserName, StringComparison.OrdinalIgnoreCase)&& o.Password.Equals(userlogin.Password));
-
-        return user;
-    }
 }
