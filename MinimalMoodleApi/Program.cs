@@ -5,11 +5,38 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Linq;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options=>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
+    {
+        Scheme = "Bearer",
+        BearerFormat ="JWT",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Description = "Bearer Authentication with JWT Token",
+        Type = SecuritySchemeType.Http
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference{
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+            
+    });
+});
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
@@ -19,7 +46,7 @@ clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, 
 // Pass the handler to httpclient
 HttpClient client = new HttpClient(clientHandler);
 
-var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
+var uri = "https://localhost/webservice/rest/server.php";
 
 var post = async(string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string,string>[] data) => {
     client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
@@ -31,6 +58,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateActor = true,
         ValidateAudience = true,
         ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
@@ -46,39 +74,30 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
-app.MapPost("/createToken",
- [AllowAnonymous] (HttpRequest request,TokenUser userz) =>{
-    var username = userz.UserName;
-    var password = userz.Password;
+app.MapPost("/createToken",(TokenUser userz) =>{
 
-    if (username == "test" && password == "test123")
+    
+    if (!string.IsNullOrEmpty(userz.Username)&&!string.IsNullOrEmpty(userz.Password))
     {
-        var issuer = builder.Configuration["Jwt:Issuer"];
-        var audience = builder.Configuration["Jwt:Audience"];
-        var key = Encoding.ASCII.GetBytes
-        (builder.Configuration["Jwt:Key"]);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, userz.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, userz.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti,
-                Guid.NewGuid().ToString())
-             }),
-            Expires = DateTime.UtcNow.AddMinutes(5),
-            Issuer = issuer,
-            Audience = audience,
-            SigningCredentials = new SigningCredentials
-            (new SymmetricSecurityKey(key),
-            SecurityAlgorithms.HmacSha512Signature)
+        var loggedInUser =  UserRepository.Users.FirstOrDefault(o=> o.Username.Equals(userz.Username, StringComparison.OrdinalIgnoreCase)&& o.Password.Equals(userz.Password));;
+        if (loggedInUser is null) return Results.NotFound("user not found");
+        
+        var claims = new[]{
+            new Claim(ClaimTypes.NameIdentifier,loggedInUser.Username),
+            new Claim(ClaimTypes.Role, loggedInUser.Role)
         };
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        var jwtToken = tokenHandler.WriteToken(token);
-        var stringToken = tokenHandler.WriteToken(token);
-        return Results.Ok(stringToken);
+        
+         var token = new JwtSecurityToken(
+            issuer: builder.Configuration["Jwt:Issuer"],
+            audience: builder.Configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(1),
+            signingCredentials: new SigningCredentials
+            (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            SecurityAlgorithms.HmacSha256)
+        );
+         var tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
+         return Results.Ok(tokenstring);
     }
     return Results.Unauthorized();
 });
@@ -89,9 +108,9 @@ app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse 
 });
 
 //course methods
-app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response,string token) =>
 {
-    var wstoken = request.Query["wstoken"];
+    var wstoken = token;
     var wsfunction = "core_course_get_courses";
     var moodlewsrestformat = "json";
     var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
@@ -103,7 +122,9 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
                 response.WriteAsync($" {repo.fullname} {repo.shortname} \n");
 
             }
+            
         }
+
     }
     catch (Exception e)
     {
@@ -115,7 +136,8 @@ app.MapGet("/getcourses", async (HttpRequest request, HttpResponse response) =>
     }
 });
 
-app.MapPost("/createcourse", async ([FromBody] dataCourseObject dataObject) =>
+
+app.MapPost("/createcourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async ([FromBody] dataCourseObject dataObject) =>
 {
     var wstoken = dataObject.wstoken;
     var wsfunction = "core_course_create_courses";
@@ -134,7 +156,7 @@ app.MapPost("/createcourse", async ([FromBody] dataCourseObject dataObject) =>
 
 });
 
-app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/deletecourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
 {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_course_delete_courses";
@@ -143,7 +165,8 @@ app.MapGet("/deletecourse", async (HttpRequest request, HttpResponse response) =
     client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
 });
 
-app.MapPost("/addusertocourse", async([FromBody] dataEnrolmentObject dataObject) => 
+
+app.MapPost("/addusertocourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async([FromBody] dataEnrolmentObject dataObject) => 
 {
     var wstoken = dataObject.wstoken;
     var wsfunction = "enrol_manual_enrol_users";
@@ -184,7 +207,7 @@ app.MapPost("/removestudentfromcourse", async([FromBody] dataRoleObject dataObje
 });
 
 //user methods
-app.MapPost("/createuser", async ([FromBody] dataUserObject dataObject) =>
+app.MapPost("/createuser",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async ([FromBody] dataUserObject dataObject) =>
 {
     var wstoken = dataObject.wstoken;
     var wsfunction = "core_user_create_users";
@@ -205,7 +228,7 @@ app.MapPost("/createuser", async ([FromBody] dataUserObject dataObject) =>
 });
 
 //Group methods
-app.MapPost("/addusertogroup", async([FromBody] dataGroupObject dataObject) => {
+app.MapPost("/addusertogroup",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async([FromBody] dataGroupObject dataObject) => {
     var wstoken = dataObject.wstoken;
     var wsfunction = "core_group_add_group_members";
     var groupid = dataObject.groupid;
@@ -220,7 +243,7 @@ app.MapPost("/addusertogroup", async([FromBody] dataGroupObject dataObject) => {
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
-app.MapPost("/removeuserfromgroup", async([FromBody] dataGroupObject dataObject) => 
+app.MapPost("/removeuserfromgroup",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async([FromBody] dataGroupObject dataObject) => 
 {
     
     var wstoken = dataObject.wstoken;
@@ -240,7 +263,7 @@ app.MapPost("/removeuserfromgroup", async([FromBody] dataGroupObject dataObject)
 
 //Password Reset
 
-app.MapPost("/resetpassword", async ([FromBody] dataPasswordResetObject dataObject) =>
+app.MapPost("/resetpassword",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator")] async ([FromBody] dataPasswordResetObject dataObject) =>
 {
     var wstoken = dataObject.wstoken;
     var username = dataObject.username;
@@ -255,7 +278,7 @@ app.MapPost("/resetpassword", async ([FromBody] dataPasswordResetObject dataObje
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
-app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/getuser",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_get_users";
     var moodlewsrestformat = "json";
@@ -275,6 +298,8 @@ app.MapGet("/getuser", async (HttpRequest request, HttpResponse response) => {
         }
     }
 });
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();
@@ -356,12 +381,24 @@ public class MoodleUserlistObject
     public object[] warnings { get; set; }
 }
 
-record TokenUser
+public class TokenUser
 {
-    public string UserName { get; set; }
+    public string Username { get; set; }
     public string Password { get; set; }
 }
+public class UserInfo{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Role { get; set; }
+}
 
+public class UserRepository{
+    public static List<UserInfo> Users = new(){
+        new() {Username = "Admin", Password = "123",Role ="Administrator"},
+        new(){Username = "fake", Password = "account",Role = "fake"},
+        new(){Username = "Service", Password = "123",Role = "Service"}
+    };
+}
 public class dataUserObject
 {
     public string wstoken {get;set;}
