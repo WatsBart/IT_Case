@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
 using System.Net;
 using TodoApi.Models;
 namespace TodoApi.Controllers
@@ -10,23 +11,30 @@ namespace TodoApi.Controllers
 
         public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
         
-        [Route(@"api/createuser/{firstName}/{lastName}/{email}/{username}/{password}")]
-        [HttpGet]
+        [Route(@"api/createuser")]
+        [HttpPost]
         public string CreateUsers(string firstName,string lastName,string email, string password, string username)
         {
-            var newUser = new Cursist();
-            newUser.Voornaam = firstName;
-            newUser.Achternaam = lastName;
-            newUser.Email = $@"{email}";
-            newUser.Password = password; 
-            newUser.Username = username; 
+            var newUser = new Cursist()
+            {
+                Voornaam = firstName,
+                Achternaam = lastName,
+                Email = $@"{email}",
+                Password = password,
+                Username = username
+            };
+            var json = JsonConvert.SerializeObject(newUser);
+            var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            using(var client = new HttpClient())
+            {
+                var response = client.PostAsync($"http://localhost/webservice/rest/server.php?wstoken=1d5ecc3c89bff085d3fb31ba1db0c03a&wsfunction=core_user_create_users&users[0][username]={newUser.Username}&users[0][password]={newUser.Password}&users[0][firstname]={newUser.Voornaam}&users[0][lastname]={newUser.Achternaam}&users[0][email]={newUser.Email}&moodlewsrestformat=json",data);
+                var result = response.Result.Content.ReadAsStringAsync();
+                result.Wait();
+                return $"Function complete: {firstName} {lastName} {username} {password} {email}\n{result.Result}";
+            }
             
-            string variables = $"&users[0][username]={newUser.Username}&users[0][password]={newUser.Password}&users[0][firstname]={newUser.Voornaam}&users[0][lastname]={newUser.Achternaam}&users[0][email]={newUser.Email}";
-            var client = new HttpClient();
-            Console.WriteLine($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_create_users{variables}&moodlewsrestformat=json");
-            var log = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_create_users{variables}&moodlewsrestformat=json");
-            log.Wait();
-            return $"Function complete: {firstName} {lastName} {username} {password} {email}\n http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_create_users{variables}&moodlewsrestformat=json";
+            
+            
         }
         [Route(@"api/suspenduser/{username}")]
         [HttpGet]

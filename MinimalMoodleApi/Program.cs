@@ -5,9 +5,13 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+<<<<<<< HEAD
 using System.Linq;
 using Microsoft.OpenApi.Models;
 
+=======
+using Microsoft.AspNetCore.Mvc;
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -136,14 +140,19 @@ app.MapGet("/getcourses",[Authorize(AuthenticationSchemes = JwtBearerDefaults.Au
     }
 });
 
+<<<<<<< HEAD
 app.MapGet("/createcourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
+=======
+app.MapPost("/createcourse", async ([FromBody] dataCourseObject dataObject) =>
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 {
-    var wstoken = request.Query["wstoken"];
+    var wstoken = dataObject.wstoken;
     var wsfunction = "core_course_create_courses";
-    var fullname = request.Query["fullname"];
-    var shortname = request.Query["shortname"];
-    var categoryId = Int32.Parse(request.Query["categoryid"]);
+    var fullname = dataObject.fullname;
+    var shortname = dataObject.shortname;
+    var categoryId = dataObject.categoryid;
     var moodlewsrestformat = "json";
+
     Course newCourse = new Course();
     newCourse.fullname = fullname;
     newCourse.shortname = shortname;
@@ -152,8 +161,6 @@ app.MapGet("/createcourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.
     var data = Course.courseToData(newCourse);
     post(wstoken,wsfunction,moodlewsrestformat,data);
 
-    //client.PostAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}", new FormUrlEncodedContent(data));
-    //response.WriteAsync($"Je hebt {newCourse.fullname} toegevoegd.");
 });
 
 app.MapGet("/deletecourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
@@ -165,35 +172,64 @@ app.MapGet("/deletecourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.
     client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
 });
 
+<<<<<<< HEAD
 app.MapGet("/addusertocourse",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async(HttpRequest request, HttpResponse response) => 
+=======
+app.MapPost("/addusertocourse", async([FromBody] dataEnrolmentObject dataObject) => 
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 {
-    var wstoken = request.Query["wstoken"];
+    var wstoken = dataObject.wstoken;
     var wsfunction = "enrol_manual_enrol_users";
-    var roleid = request.Query["roleid"];
-    var courseid = request.Query["courseid"];
-    var userid = request.Query["userid"];
+    var roleid = dataObject.roleid;
+    var courseid = dataObject.courseid;
+    var userid = dataObject.userid;
     var moodlewsrestformat = "json";
 
     var data = new[]
     {
-        new KeyValuePair<string,string>("enrolments[0][roleid]",roleid),
-        new KeyValuePair<string,string>("enrolments[0][userid]",userid),
-        new KeyValuePair<string,string>("enrolments[0][courseid]",courseid)
+        new KeyValuePair<string,string>("enrolments[0][roleid]",roleid.ToString()),
+        new KeyValuePair<string,string>("enrolments[0][userid]",userid.ToString()),
+        new KeyValuePair<string,string>("enrolments[0][courseid]",courseid.ToString())
+    };
+
+    post(wstoken,wsfunction,moodlewsrestformat,data);
+});
+
+app.MapPost("/removestudentfromcourse", async([FromBody] dataRoleObject dataObject) => 
+{
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "core_role_unassign_roles";
+    var roleid = "5";
+    var instanceid = dataObject.instanceid;
+    var userid = dataObject.userid;
+    var contextlevel = "course";
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("unassignments[0][roleid]",roleid.ToString()),
+        new KeyValuePair<string,string>("unassignments[0][userid]",userid.ToString()),
+        new KeyValuePair<string,string>("unassignments[0][contextlevel]",contextlevel),
+        new KeyValuePair<string,string>("unassignments[0][instanceid]",instanceid.ToString())
     };
 
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
 //user methods
+<<<<<<< HEAD
 app.MapGet("/createuser",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
+=======
+app.MapPost("/createuser", async ([FromBody] dataUserObject dataObject) =>
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 {
-    var wstoken = request.Query["wstoken"];
+    var wstoken = dataObject.wstoken;
     var wsfunction = "core_user_create_users";
-    var username = request.Query["username"];
-    var password = request.Query["password"];
-    var firstname = request.Query["firstname"];
-    var lastname = request.Query["lastname"];
-    var email = request.Query["email"];
+    var username = dataObject.username;
+    var password = dataObject.password;
+    var firstname = dataObject.firstname;
+    var lastname = dataObject.lastname;
+    var email = dataObject.email;
     var moodlewsrestformat = "json";
     User newUser = new User();
     newUser.username = username;
@@ -203,6 +239,7 @@ app.MapGet("/createuser",[Authorize(AuthenticationSchemes = JwtBearerDefaults.Au
     newUser.email = email;
     var data = User.userToData(newUser);
     post(wstoken,wsfunction,moodlewsrestformat,data);
+<<<<<<< HEAD
     //response.WriteAsync(data.ToString());
 });
 
@@ -255,25 +292,32 @@ app.MapGet("/unsuspenduser", async(HttpRequest request, HttpResponse response) =
         var suspendJsonString = await suspendMessage.Content.ReadAsStringAsync();
         response.WriteAsync($"{username} unsuspended");
     }
+=======
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 });
-*/
 
 //Group methods
+<<<<<<< HEAD
 app.MapGet("/addusertogroup",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async(HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
+=======
+app.MapPost("/addusertogroup", async([FromBody] dataGroupObject dataObject) => {
+    var wstoken = dataObject.wstoken;
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
     var wsfunction = "core_group_add_group_members";
-    var groupid = request.Query["groupid"];
-    var userid = request.Query["userid"];
+    var groupid = dataObject.groupid;
+    var userid = dataObject.userid;
     var moodlewsrestformat = "json";
 
     var data = new[]
     {
-        new KeyValuePair<string,string>("members[0][groupid]",groupid),
-        new KeyValuePair<string,string>("members[0][userid]",userid)
+        new KeyValuePair<string,string>("members[0][groupid]",groupid.ToString()),
+        new KeyValuePair<string,string>("members[0][userid]",userid.ToString())
     };
     post(wstoken,wsfunction,moodlewsrestformat,data);
 });
 
+<<<<<<< HEAD
 /*app.MapGet("/deleteuser", async (HttpRequest request, HttpResponse response) => {
     var wstoken = request.Query["wstoken"];
     var wsfunction = "core_user_delete_users";
@@ -290,17 +334,20 @@ app.MapGet("/addusertogroup",[Authorize(AuthenticationSchemes = JwtBearerDefault
 });*/
 
 app.MapGet("/removeuserfromgroup",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service")] async(HttpRequest request, HttpResponse response) => 
+=======
+app.MapPost("/removeuserfromgroup", async([FromBody] dataGroupObject dataObject) => 
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 {
-    var wstoken = request.Query["wstoken"];
+    
+    var wstoken = dataObject.wstoken;
     var wsfunction = "core_group_delete_group_members";
-    var groupid = request.Query["groupid"];
-    var userid = request.Query["userid"];
+    var groupid = dataObject.groupid;
+    var userid = dataObject.userid;
     var moodlewsrestformat = "json";
-
     var data = new[]
     {
-        new KeyValuePair<string,string>("members[0][groupid]",groupid),
-        new KeyValuePair<string,string>("members[0][userid]",userid)
+        new KeyValuePair<string,string>("members[0][groupid]",groupid.ToString()),
+        new KeyValuePair<string,string>("members[0][userid]",userid.ToString())
     };
 
     post(wstoken,wsfunction,moodlewsrestformat,data);
@@ -309,11 +356,15 @@ app.MapGet("/removeuserfromgroup",[Authorize(AuthenticationSchemes = JwtBearerDe
 
 //Password Reset
 
+<<<<<<< HEAD
 app.MapGet("/resetpassword",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator")] async (HttpRequest request, HttpResponse response) =>
+=======
+app.MapPost("/resetpassword", async ([FromBody] dataPasswordResetObject dataObject) =>
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 {
-    var wstoken = request.Query["wstoken"];
-    var username = request.Query["username"];
-    var email = request.Query["email"];
+    var wstoken = dataObject.wstoken;
+    var username = dataObject.username;
+    var email = dataObject.email;
     var wsfunction = "core_auth_request_password_reset";
     var moodlewsrestformat = "json";
     var data = new[]
@@ -432,6 +483,7 @@ public class TokenUser
     public string Username { get; set; }
     public string Password { get; set; }
 }
+<<<<<<< HEAD
 public class UserInfo{
     public string Username { get; set; }
     public string Password { get; set; }
@@ -444,4 +496,53 @@ public class UserRepository{
         new(){Username = "fake", Password = "account",Role = "fake"},
         new(){Username = "Service", Password = "123",Role = "Service"}
     };
+=======
+
+public class dataUserObject
+{
+    public string wstoken {get;set;}
+    public string username { get; set; }
+    public string password { get; set; }
+    public string firstname { get; set; }
+    public string lastname { get; set; }
+    public string email { get; set; }
+}
+
+public class dataCourseObject
+{
+    public string wstoken { get; set; }
+    public string fullname { get; set; }
+    public string shortname { get; set; }
+    public int categoryid { get; set; }
+}
+
+public class dataEnrolmentObject
+{
+    public string wstoken { get; set; }
+    public byte roleid { get; set; }
+    public long courseid { get; set; }
+    public long userid { get; set; }
+}
+
+public class dataRoleObject
+{
+    public string wstoken { get; set; }
+    public byte roleid { get; set; }
+    public long userid { get; set; }
+    public long instanceid { get; set; }
+}
+
+public class dataGroupObject
+{
+    public string wstoken { get; set; }
+    public int groupid { get; set; }
+    public long userid { get; set; }
+}
+
+public class dataPasswordResetObject
+{
+    public string wstoken { get; set; }
+    public string username { get; set; } = "";
+    public string email { get; set; } = "";
+>>>>>>> 50467b149339d78c5de1ea1ba363d4de12d99c0d
 }
