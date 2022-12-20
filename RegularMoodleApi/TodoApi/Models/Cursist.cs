@@ -25,24 +25,24 @@ public partial class User
 public partial class UserElement
 {
     public long? Id { get; set; }
-    public string? Username { get; set; }
-    public string? Firstname { get; set; }
-    public string? Lastname { get; set; }
-    public string? Fullname { get; set; }
-    public string? Email { get; set; }
-    public string? Department { get; set; }
+    public string Username { get; set; }
+    public string Firstname { get; set; }
+    public string Lastname { get; set; }
+    public string Fullname { get; set; }
+    public string Email { get; set; }
+    public string Department { get; set; }
     public long? Firstaccess { get; set; }
     public long? Lastaccess { get; set; }
-    public string? Auth { get; set; }
+    public string Auth { get; set; }
     public bool? Suspended { get; set; }
     public bool? Confirmed { get; set; }
-    public string? Lang { get; set; }
-    public string? Theme { get; set; }
+    public string Lang { get; set; }
+    public string Theme { get; set; }
     public long? Timezone { get; set; }
     public long? Mailformat { get; set; }
-    public string? Description { get; set; }
+    public string Description { get; set; }
     public long? Descriptionformat { get; set; }
-    public Uri? Profileimageurlsmall { get; set; }
-    public Uri? Profileimageurl { get; set; }
+    public Uri Profileimageurlsmall { get; set; }
+    public Uri Profileimageurl { get; set; }
 }
 

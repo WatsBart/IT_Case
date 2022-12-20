@@ -14,6 +14,7 @@ namespace TodoApi.Controllers
         public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
         //  API main page
 
+
         [Route("api/")]
         [HttpGet]
         public string MainPage()
@@ -23,8 +24,11 @@ namespace TodoApi.Controllers
 
         //  CURSUS TOEVOEGEN
 
+
+
         [Route("api/addcourse")]
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public string CreateCourse(string fullname, string shortname, long categoryid, string courseid)
         {
             var course = new Course()
@@ -39,7 +43,7 @@ namespace TodoApi.Controllers
             var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             using(HttpClient client = new HttpClient()) 
             {
-                var response = client.PostAsync($"http://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_course_create_courses&courses[0][fullname]={course.Fullname}&courses[0][shortname]={course.Shortname}&courses[0][categoryid]={course.Categoryid}&courses[0][idnumber]={course.Idnumber}&moodlewsrestformat=json",data);
+                var response = client.PostAsync($"http://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken=4aedb8e394c3ac61c042c0753e4d5c57&wsfunction=core_course_create_courses&courses[0][fullname]={course.Fullname}&courses[0][shortname]={course.Shortname}&courses[0][categoryid]={course.Categoryid}&courses[0][idnumber]={course.Idnumber}&moodlewsrestformat=json",data);
                 var result = response.Result.Content.ReadAsStringAsync();
                 result.Wait();
                 return $"Je hebt de volgende cursus toegevoegd: {course.Fullname} ({course.Shortname})\n{result.Result}";
@@ -50,6 +54,7 @@ namespace TodoApi.Controllers
 
         [Route("api/deletecourse/{shortname}")]
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public string DeleteCourse(string shortname)
         {
             HttpClient client = new HttpClient();
@@ -76,6 +81,7 @@ namespace TodoApi.Controllers
 
         [Route("api/getcourses")]
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public string GetCourses()
         {
             HttpClient client = new HttpClient();
@@ -91,7 +97,6 @@ namespace TodoApi.Controllers
             }
 
             return returnvalues;
-
 
         }
     }

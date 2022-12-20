@@ -49,7 +49,7 @@ namespace TodoApi.Controllers
             User user = JsonConvert.DeserializeObject<User>(result.Result);
             //user.Users[0].Id
 
-            if (user.Users[0].Suspended == false)
+            if (user?.Users[0].Suspended == false)
             {
                 response = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_update_users&users[0][id]={user.Users[0].Id}&users[0][suspended]=1&moodlewsrestformat=json");
                 result = response.Result.Content.ReadAsStringAsync();

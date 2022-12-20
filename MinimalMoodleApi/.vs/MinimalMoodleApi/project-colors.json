@@ -1,16 +1,11 @@
 {
   "Version": 1,
   "ProjectMap": {
-    "9663e62a-7df0-4140-9a87-b3f735b2b979": {
-      "ProjectGuid": "9663e62a-7df0-4140-9a87-b3f735b2b979",
-      "DisplayName": "TodoApi",
-      "ColorIndex": 0
-    },
     "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
       "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
       "DisplayName": "Miscellaneous Files",
       "ColorIndex": -1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 0
 }
