@@ -74,7 +74,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
-app.MapPost("/createToken",(TokenUser userz) =>{
+app.MapPost("/createToken",(UserLogin userz) =>{
 
     
     if (!string.IsNullOrEmpty(userz.Username)&&!string.IsNullOrEmpty(userz.Password))
@@ -103,7 +103,7 @@ app.MapPost("/createToken",(TokenUser userz) =>{
 });
 
 //token security testing function
-app.MapGet("/securityTest",[Authorize] async (HttpRequest request, HttpResponse response) => {
+app.MapGet("/securityTest",[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Administrator, Service, App")] async (HttpRequest request, HttpResponse response) => {
     response.WriteAsync("hello world");
 });
 
@@ -381,7 +381,7 @@ public class MoodleUserlistObject
     public object[] warnings { get; set; }
 }
 
-public class TokenUser
+public class UserLogin
 {
     public string Username { get; set; }
     public string Password { get; set; }
@@ -396,7 +396,8 @@ public class UserRepository{
     public static List<UserInfo> Users = new(){
         new() {Username = "Admin", Password = "123",Role ="Administrator"},
         new(){Username = "fake", Password = "account",Role = "fake"},
-        new(){Username = "Service", Password = "123",Role = "Service"}
+        new(){Username = "Service", Password = "123",Role = "Service"},
+        new(){Username = "app", Password = "123",Role = "App"}
     };
 }
 public class dataUserObject
