@@ -10094,19 +10094,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\seger\\.nuget\\packages\\": {}
+    "C:\\Users\\Ian Segers\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\seger\\Documents\\AP\\IT Case\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
+      "projectUniqueName": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
       "projectName": "TodoApi",
-      "projectPath": "C:\\Users\\seger\\Documents\\AP\\IT Case\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
-      "packagesPath": "C:\\Users\\seger\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\seger\\Documents\\AP\\IT Case\\IT_Case\\RegularMoodleApi\\TodoApi\\obj\\",
+      "projectPath": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
+      "packagesPath": "C:\\Users\\Ian Segers\\.nuget\\packages\\",
+      "outputPath": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\seger\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Ian Segers\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

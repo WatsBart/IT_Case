@@ -9,7 +9,7 @@ namespace TodoApi.Controllers
     public class UserController
     {
 
-        public string token = "1d5ecc3c89bff085d3fb31ba1db0c03a";
+        public string token = "4aedb8e394c3ac61c042c0753e4d5c57";
         
         [Route(@"api/createuser")]
         [HttpPost]
@@ -27,7 +27,7 @@ namespace TodoApi.Controllers
             var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             using(var client = new HttpClient())
             {
-                var response = client.PostAsync($"http://localhost/webservice/rest/server.php?wstoken=1d5ecc3c89bff085d3fb31ba1db0c03a&wsfunction=core_user_create_users&users[0][username]={newUser.Username}&users[0][password]={newUser.Password}&users[0][firstname]={newUser.Voornaam}&users[0][lastname]={newUser.Achternaam}&users[0][email]={newUser.Email}&moodlewsrestformat=json",data);
+                var response = client.PostAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_create_users&users[0][username]={newUser.Username}&users[0][password]={newUser.Password}&users[0][firstname]={newUser.Voornaam}&users[0][lastname]={newUser.Achternaam}&users[0][email]={newUser.Email}&moodlewsrestformat=json",data);
                 var result = response.Result.Content.ReadAsStringAsync();
                 result.Wait();
                 return $"Function complete: {firstName} {lastName} {username} {password} {email}\n{result.Result}";
