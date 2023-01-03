@@ -115,52 +115,35 @@ app.MapGet("/secretariaatsForm", [Authorize(AuthenticationSchemes = JwtBearerDef
     response.WriteAsync("<body><form method='post' action='/postform'><label for='id'>Student's id</label><br/><input type='text' name='id' value='' /><br/><label for='username'>Student's username</label><br/><input type='text' name='username' /><br/><input type='submit' /></form></body>");
 });
 
-app.MapPost("/postSecretariaatsForm", async (HttpRequest request, HttpResponse response) =>
+app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
 {
     string id = request.Form["id"];
     string username = request.Form["username"];
     var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
     var wsfunction = "core_user_update_users";
     var moodlewsrestformat = "json";
-    if (id == "")
-    {
-        if (username != "")
-        {
-            var data = new[]
+    if(id==""){
+        var data = new[]
         {
             new KeyValuePair<string,string>("users[0][username]",username),
             new KeyValuePair<string,string>("users[0][password]","Moodle1."),
             new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
             new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
-            };
-            post(wstoken, wsfunction, moodlewsrestformat, data);
-        }
-        else
-        {
-            response.WriteAsync($"<body><p>Error, beide velden zijn leeg.</p><form method='get' action='/secretariaatsForm'><input type='submit' value='return'/></form></body>");
-        }
-
-    }
-    else if (username == "")
-    {
-        if (id != "")
-        {
-            var data = new[]
-                {
+        };
+        post(wstoken, wsfunction, moodlewsrestformat, data);
+    }else if(username==""){
+        var stringTask = await client.GetAsync($"{uri}?wstoken=4aedb8e394c3ac61c042c0753e4d5c57&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        var data = new[]
+            {
                 new KeyValuePair<string,string>("users[0][id]",id),
                 new KeyValuePair<string,string>("users[0][password]","Moodle1."),
                 new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
                 new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
             };
             post(wstoken, wsfunction, moodlewsrestformat, data);
-        }
-        else
-        {
-            response.WriteAsync($"<body><p>Error, beide velden zijn leeg.</p><form method='get' action='/secretariaatsForm'><input type='submit' value='return'/></form></body>");
-        }
-    }
-    else
-    {
+    }else{
         var stringTask = await client.GetAsync($"{uri}?wstoken=4aedb8e394c3ac61c042c0753e4d5c57&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
         var message = JsonSerializer.Deserialize<Root>(jsonContent);
