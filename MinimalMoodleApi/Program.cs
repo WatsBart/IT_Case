@@ -110,7 +110,7 @@ app.MapGet("/securityTest", [Authorize] async (HttpRequest request, HttpResponse
     response.WriteAsync("hello world");
 });
 
-app.MapGet("/secretariaatsForm", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/secretariaatsForm", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
 {
     response.WriteAsync("<body><form method='post' action='/postform'><label for='id'>Student's id</label><br/><input type='text' name='id' value='' /><br/><label for='username'>Student's username</label><br/><input type='text' name='username' /><br/><input type='submit' /></form></body>");
 });
@@ -466,6 +466,7 @@ public class UserRepository
         new(){Username = "Service", Password = "123",Role = "Service"}
     };
 }
+
 public class dataUserObject
 {
     public string wstoken { get; set; }
