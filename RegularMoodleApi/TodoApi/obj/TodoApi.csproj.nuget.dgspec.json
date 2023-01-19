@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {}
+    "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {}
   },
   "projects": {
-    "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {
+    "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
+        "projectUniqueName": "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
         "projectName": "TodoApi",
-        "projectPath": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
-        "packagesPath": "C:\\Users\\Ian Segers\\.nuget\\packages\\",
-        "outputPath": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\obj\\",
+        "projectPath": "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
+        "packagesPath": "C:\\Users\\shubp\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Ian Segers\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\shubp\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -58,10 +58,6 @@
               "target": "Package",
               "version": "[6.0.9, )"
             },
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.1, )"
-            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.3.0, )"
@@ -86,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }
