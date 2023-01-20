@@ -177,20 +177,19 @@ app.MapGet("/getcourses", [Authorize(AuthenticationSchemes = JwtBearerDefaults.A
         var message = await JsonSerializer.DeserializeAsync<List<Course>>(await stringTask);
         if (message is not null)
         {
-            foreach (var repo in message)
-            {
-                response.WriteAsync($" {repo.fullname} {repo.shortname} \n");
-            }
+            return message;
         }
+        return null;
     }
     catch (Exception e)
     {
         var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
         if (message is not null)
         {
-            Console.WriteLine(message.ToString());
+            response.WriteAsync(message.ToString());
         }
     }
+    return null;
 });
 
 
