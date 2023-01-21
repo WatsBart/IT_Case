@@ -12,7 +12,6 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.9",
           "Microsoft.EntityFrameworkCore.Tools": "6.0.9",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "6.0.9",
-          "Newtonsoft.Json": "13.0.1",
           "Swashbuckle.AspNetCore": "6.3.0"
         },
         "runtime": {
