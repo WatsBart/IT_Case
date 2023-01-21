@@ -111,56 +111,83 @@ app.MapGet("/securityTest", [Authorize] async (HttpRequest request, HttpResponse
     response.WriteAsync("hello world");
 });
 
+/*
+    Een simpele form met submit knop die een id en een username vraagt.
+    De form submit naar /postform
+*/
 app.MapGet("/secretariaatsForm", /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")]*/ async (HttpRequest request, HttpResponse response) =>
 {
     response.WriteAsync("<body><form method='post' action='/postform'><label for='id'>Student's id</label><br/><input type='text' name='id' value='' /><br/><label for='username'>Student's username</label><br/><input type='text' name='username' /><br/><input type='submit' /></form></body>");
 });
 
+/*
+    Deze functie verwacht een form met id en username.
+    Deze functie zal het wachtwoord van de gebruiker met het ingegeven id of username resetten.
+*/
 app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
 {
+    //De parameters uit de aangekregen form
     string id = request.Form["id"];
     string username = request.Form["username"];
-    // CVO: var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
-    var wstoken = "ae9250588c297a3960180a89f6a63a58";
+    //De token voor het afhandelen van de uiteindelijke post functie. Dit zou ook via de form kunnen.
+    var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
+    //De uiteindelijke moodle functie die wordt aangeroepen
     var wsfunction = "core_user_update_users";
     var moodlewsrestformat = "json";
+
+    //Controle op de inhoud van de velden
     if(id==""){
         if(username==""){
+            //Beide velden zijn leeg
             response.WriteAsync($"<body><p>Beide velden zijn leeg. Probeer het opnieuw.</p><form method='get' action='/secretariaatsForm'><input type='submit' value='return'/></form></body>");            
         }else{
-            var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+            //Enkel id is leeg. Zoek in de database naar een gebruiker met de ingegeven username
+            var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
             var jsonContent = await stringTask.Content.ReadAsStringAsync();
             var message = JsonSerializer.Deserialize<Root>(jsonContent);
-            if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden.");
+            //Als de lijst van users met deze username 0 lang is bestaat deze user niet.
+            if(message.users.Count == 0) response.WriteAsync($"Geen student met username {username} gevonden.");
+            else{
+                //Update het wachtwoord van de user adhv de ingegeven username
+                var data = new[]
+                {
+                    new KeyValuePair<string,string>("users[0][username]",username),
+                    new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                    new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                    new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+                };
+                post(wstoken, wsfunction, moodlewsrestformat, data);
+            }
+        }
+    }else if(username==""){
+        //Enkel username is leeg. Zoek in de database naar een gebruiker met ingegeven id
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+        //Als de lijst van users met ingegeven id 0 lang is bestaat de user niet
+        if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden");            
+        else {
+            //Update het wachtwoord adhv het ingegeven id
             var data = new[]
             {
-                new KeyValuePair<string,string>("users[0][username]",username),
+                new KeyValuePair<string,string>("users[0][id]",id),
                 new KeyValuePair<string,string>("users[0][password]","Moodle1."),
                 new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
                 new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
             };
             post(wstoken, wsfunction, moodlewsrestformat, data);
         }
-    }else if(username==""){
-        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
-        var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
-        if(message.users.Count == 0) response.WriteAsync($"Geen student met username {username} gevonden");            
-        var data = new[]
-        {
-            new KeyValuePair<string,string>("users[0][id]",id),
-            new KeyValuePair<string,string>("users[0][password]","Moodle1."),
-            new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
-            new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
-        };
-        post(wstoken, wsfunction, moodlewsrestformat, data);
     }else{
+        //Beide velden zijn ingevuld. Zoek in de database naar een gebruiker met het ingegeven id.
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
         var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        //Als de lijst van users met ingegeven id 0 lang is bestaat de user niet
         if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden.");
-        if (username == message.users[0].username)
+        //Controleer of de ingegeven username overeenkomt met de username van de gebruiker met het ingegeven id
+        else if (username == message.users[0].username)
         {
+            //Zo ja, update het wachtwoord van de gebruiker
             var data = new[]
             {
                 new KeyValuePair<string,string>("users[0][id]",id),
@@ -172,19 +199,28 @@ app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
         }
         else
         {
+            //Zo nee, probeer opnieuw
             response.WriteAsync($"<body><p>Bedoelde je {username} of {message.users[0].username}?</p><form method='get' action='/secretariaatsForm'><input type='submit' value='return'/></form></body>");
         }
     }
 });
 
+/*
+    Een functie met dezelfde functionaliteit als /postform maar werkt in swagger.
+    Deze functie verwacht een string id en string username.
+    Deze functie zal het wachtwoord van de gebruiker met het ingegeven id of username resetten.
+*/
 app.MapPost("/postformSwagger", async (string? studentId, string? studentUsername) =>
 {
+    //Haal de id en username uit de parameters
     string id = studentId;
     string username = studentUsername;
-    // CVO: var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
-    var wstoken = "ae9250588c297a3960180a89f6a63a58";
+    //Hardcoded token voor de moodle functie aan te roepen
+    var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
     var wsfunction = "core_user_update_users";
     var moodlewsrestformat = "json";
+    //Een lege input in swagger geeft null ipv een lege string
+    //Verder idem aan /postform
     if(id == "" || id is null){
         if(username == "" || username is null){
             return "Beide velden zijn leeg. Probeer het opnieuw.";
@@ -237,6 +273,215 @@ app.MapPost("/postformSwagger", async (string? studentId, string? studentUsernam
         else
         {
             return $"Bedoelde je {username} of {message.users[0].username}?";
+        }
+    }
+});
+
+/*
+    Een simpele form met 4 inputvelden. Id, username, fullname, email
+*/
+app.MapGet("/studentenForm", /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")]*/ async (HttpRequest request, HttpResponse response) =>
+{
+    response.WriteAsync("<body><form method='post' action='/postStudentForm'><label for='id'>Student's id</label><br/><input type='text' name='id' value='' /><br/><label for='username'>Student's username</label><br/><input type='text' name='username' /><br/><label for='fullname'>Student's full name</label><br/><input type='text' name='fullname' value='' /><br /><label for='email'>Student's e-mail</label><br/><input type='text' name='email' value='' /><br /><input type='submit' /></form></body>");
+});
+
+/*
+    Deze functie verwacht een form met id, username, fullname, email
+    Deze functie zal het wachtwoord van de gebruiker met ingegeven id of username resetten als de ingegeven fullname of email overeenkomt.
+    Fullname en email dienen als extra beveiliging.
+*/
+app.MapPost("/postStudentForm", async (HttpRequest request, HttpResponse response) =>
+{
+    //Haal de gegevens uit de form
+    string id = request.Form["id"];
+    string username = request.Form["username"];
+    string fullname = request.Form["fullname"];
+    string email = request.Form["email"];
+    //Hardcoded token om de moodle functie uit te voeren
+    var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
+    var wsfunction = "core_user_update_users";
+    var moodlewsrestformat = "json";
+    //Controle op de inhoud van de velden
+    if(id==""){
+        if(username==""){
+            //Zowel id als username is leeg
+            response.WriteAsync($"<body><p>Id en username zijn leeg. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");            
+        }else{
+            //Enkel id is leeg. Zoek in de database naar een gebruiker met ingegeven username
+            var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
+            var jsonContent = await stringTask.Content.ReadAsStringAsync();
+            var message = JsonSerializer.Deserialize<Root>(jsonContent);
+            //Als de lijst van studenten met ingegeven username 0 lang is bestaat de gebruiker niet
+            if(message.users.Count == 0) response.WriteAsync($"<body><p>Geen student met username {username} gevonden. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+            else {
+                string fullnameOfStudentWithUsername = message.users[0].fullname;
+                string emailOfStudentWithUsername = message.users[0].email;
+                //Fullname of email moet ingegeven worden ter controle
+                if(fullname == "" && email == "") response.WriteAsync($"<body><p>Gelieve uw volledige naam of email in te geven om te verifiëren dat u het bent. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+                //Als zowel fullname als email niet overeenkomen met de gevonden gebruiker mag het wachtwoord niet reset worden.
+                else if(fullnameOfStudentWithUsername != fullname && emailOfStudentWithUsername != email) response.WriteAsync($"<body><p>Je naam en/of email komt niet overeen met je ingevoerde username. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+                else {
+                    //Fullname of email komen overeen met de gebruiker met ingegeven username. Het wachtwoord wordt reset.
+                    var data = new[]
+                    {
+                        new KeyValuePair<string,string>("users[0][username]",username),
+                        new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                        new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                        new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+                    };
+                    post(wstoken, wsfunction, moodlewsrestformat, data);
+                }
+            }
+        }
+    }else if(username==""){
+        //Enkel username is leeg. Zoek een gebruiker met het ingegeven id.
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+        //Als de lijst van gebruikers met ingegeven id 0 lang is bestaat de gebruiker niet.
+        if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden");
+        else{
+            string fullnameOfStudentWithId = message.users[0].fullname;
+            string emailOfStudentWithId = message.users[0].email;
+            //Fullname of email moet ingegeven worden ter controle
+            if(fullname == "" && email == "") response.WriteAsync($"<body><p>Gelieve uw volledige naam of email in te geven om te verifiëren dat u het bent. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+            //Als zowel fullname als email niet overeenkomen met de gevonden gebruiker mag het wachtwoord niet reset worden.
+            else if(fullnameOfStudentWithId != fullname && emailOfStudentWithId != email) response.WriteAsync($"<body><p>Je naam en/of email komt niet overeen met je ingevoerde id. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+            else{
+                //Fullname of email komen overeen met de gebruiker met ingegeven id. Het wachtwoord wordt reset.
+                var data = new[]
+                {
+                    new KeyValuePair<string,string>("users[0][id]",id),
+                    new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                    new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                    new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+                };
+                post(wstoken, wsfunction, moodlewsrestformat, data);
+            }
+        }
+    }else{
+        //Beide velden zijn ingevuld. Zoek in de database naar een gebruiker met het ingegeven id.
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        //Als de lijst van gebruikers met ingegeven id 0 lang is bestaat de gebruiker niet.
+        if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden.");
+        //Controleer of de ingegeven username overeenkomt met de username van de gebruiker met het ingegeven id.
+        if (username == message.users[0].username)
+        {
+            string fullnameOfStudentWithId = message.users[0].fullname;
+            string emailOfStudentWithId = message.users[0].email;
+            //Fullname of email moeten ingevoerd worden ter controle.
+            if(fullname == "" && email == "") response.WriteAsync($"<body><p>Gelieve uw volledige naam of email in te geven om te verifiëren dat u het bent. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+            //Als zowel fullname als email niet overeenkomen mag het wachtwoord niet reset worden.
+            else if(fullnameOfStudentWithId != fullname && emailOfStudentWithId != email) response.WriteAsync($"<body><p>Je naam en/of email komt niet overeen met je ingevoerde id. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+            else{
+                //Fullname of email is correct. Het wachtwoord wordt reset.
+                var data = new[]
+                {
+                    new KeyValuePair<string,string>("users[0][id]",id),
+                    new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                    new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                    new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+                };
+                post(wstoken, wsfunction, moodlewsrestformat, data);
+            }
+        }
+        else
+        {
+            //De ingevoerde username komt niet overeen met de username van de gebruiker met ingevoerde id.
+            response.WriteAsync($"<body><p>Bedoelde je {username} of {message.users[0].username}?</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
+        }
+    }
+});
+
+/*
+    Deze functie heeft dezelfde functionaliteit als /postStudentForm, maar werkt in Swagger.
+    Deze functie verwacht een string StudentId, string StudentUsername, string StudentFullName, string StudentEmail
+*/
+app.MapPost("/postStudentFormSwagger", async (string? StudentId, string? StudentUsername, string? StudentFullName, string? StudentEmail) =>
+{
+    string id = StudentId;
+    string username = StudentUsername;
+    string fullname = StudentFullName;
+    string email = StudentEmail;
+    var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
+    var wsfunction = "core_user_update_users";
+    var moodlewsrestformat = "json";
+    if(id is null){
+        if(username is null){
+            return($"Id en username zijn leeg. Probeer het opnieuw.");            
+        }else{
+            var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
+            var jsonContent = await stringTask.Content.ReadAsStringAsync();
+            var message = JsonSerializer.Deserialize<Root>(jsonContent);
+            if(message.users.Count == 0) return($"Geen student met username {username} gevonden. Probeer het opnieuw.");
+            else {
+                string fullnameOfStudentWithUsername = message.users[0].fullname;
+                string emailOfStudentWithUsername = message.users[0].email;
+                if(fullname is null && email is null) return($"Gelieve uw volledige naam of email in te geven om te verifiëren dat u het bent. Probeer het opnieuw.");
+                else if(fullnameOfStudentWithUsername != fullname && emailOfStudentWithUsername != email) return($"Je naam en/of email komt niet overeen met je ingevoerde username. Probeer het opnieuw.");
+                else {
+                    var data = new[]
+                    {
+                        new KeyValuePair<string,string>("users[0][username]",username),
+                        new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                        new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                        new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+                    };
+                    post(wstoken, wsfunction, moodlewsrestformat, data);
+                    return "Wachtwoord correct reset.";
+                }
+            }
+        }
+    }else if(username is null){
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+        if(message.users.Count == 0) return($"Geen student met id {id} gevonden");
+        else{
+            string fullnameOfStudentWithId = message.users[0].fullname;
+            string emailOfStudentWithId = message.users[0].email;
+            if(fullname is null && email is null) return($"Gelieve uw volledige naam of email in te geven om te verifiëren dat u het bent. Probeer het opnieuw.");
+            else if(fullnameOfStudentWithId != fullname && emailOfStudentWithId != email) return($"Je naam en/of email komt niet overeen met je ingevoerde id. Probeer het opnieuw.");
+            else{
+                var data = new[]
+                {
+                    new KeyValuePair<string,string>("users[0][id]",id),
+                    new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                    new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                    new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+                };
+                post(wstoken, wsfunction, moodlewsrestformat, data);
+                return "Wachtwoord correct reset.";
+            }
+        }
+    }else{
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        if(message.users.Count == 0) return($"Geen student met id {id} gevonden.");
+        if (username == message.users[0].username)
+        {
+            string fullnameOfStudentWithId = message.users[0].fullname;
+            string emailOfStudentWithId = message.users[0].email;
+            if(fullname is null && email is null) return($"Gelieve uw volledige naam of email in te geven om te verifiëren dat u het bent. Probeer het opnieuw.");
+            else if(fullnameOfStudentWithId != fullname && emailOfStudentWithId != email) return($"Je naam en/of email komt niet overeen met je ingevoerde id. Probeer het opnieuw.");
+            else{
+                var data = new[]
+                {
+                    new KeyValuePair<string,string>("users[0][id]",id),
+                    new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                    new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                    new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+                };
+                post(wstoken, wsfunction, moodlewsrestformat, data);
+                return "Wachtwoord correct reset.";
+            }
+        }
+        else
+        {
+            return($"Bedoelde je {username} of {message.users[0].username}?");
         }
     }
 });
