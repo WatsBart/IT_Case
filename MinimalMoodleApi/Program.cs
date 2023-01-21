@@ -46,7 +46,8 @@ clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, 
 // Pass the handler to httpclient
 HttpClient client = new HttpClient(clientHandler);
 
-var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
+//var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
+var uri = "http://localhost/webservice/rest/server.php";
 
 var post = async (string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string, string>[] data) =>
 {
@@ -110,7 +111,7 @@ app.MapGet("/securityTest", [Authorize] async (HttpRequest request, HttpResponse
     response.WriteAsync("hello world");
 });
 
-app.MapGet("/secretariaatsForm", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/secretariaatsForm", /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")]*/ async (HttpRequest request, HttpResponse response) =>
 {
     response.WriteAsync("<body><form method='post' action='/postform'><label for='id'>Student's id</label><br/><input type='text' name='id' value='' /><br/><label for='username'>Student's username</label><br/><input type='text' name='username' /><br/><input type='submit' /></form></body>");
 });
@@ -119,34 +120,45 @@ app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
 {
     string id = request.Form["id"];
     string username = request.Form["username"];
-    var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
+    // CVO: var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
+    var wstoken = "ae9250588c297a3960180a89f6a63a58";
     var wsfunction = "core_user_update_users";
     var moodlewsrestformat = "json";
     if(id==""){
-        var data = new[]
-        {
-            new KeyValuePair<string,string>("users[0][username]",username),
-            new KeyValuePair<string,string>("users[0][password]","Moodle1."),
-            new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
-            new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
-        };
-        post(wstoken, wsfunction, moodlewsrestformat, data);
-    }else if(username==""){
-        var stringTask = await client.GetAsync($"{uri}?wstoken=4aedb8e394c3ac61c042c0753e4d5c57&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
-        var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);
-        var data = new[]
+        if(username==""){
+            response.WriteAsync($"<body><p>Beide velden zijn leeg. Probeer het opnieuw.</p><form method='get' action='/secretariaatsForm'><input type='submit' value='return'/></form></body>");            
+        }else{
+            var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+            var jsonContent = await stringTask.Content.ReadAsStringAsync();
+            var message = JsonSerializer.Deserialize<Root>(jsonContent);
+            if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden.");
+            var data = new[]
             {
-                new KeyValuePair<string,string>("users[0][id]",id),
+                new KeyValuePair<string,string>("users[0][username]",username),
                 new KeyValuePair<string,string>("users[0][password]","Moodle1."),
                 new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
                 new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
             };
             post(wstoken, wsfunction, moodlewsrestformat, data);
+        }
+    }else if(username==""){
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+        if(message.users.Count == 0) response.WriteAsync($"Geen student met username {username} gevonden");            
+        var data = new[]
+        {
+            new KeyValuePair<string,string>("users[0][id]",id),
+            new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+            new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+            new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+        };
+        post(wstoken, wsfunction, moodlewsrestformat, data);
     }else{
-        var stringTask = await client.GetAsync($"{uri}?wstoken=4aedb8e394c3ac61c042c0753e4d5c57&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
         var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden.");
         if (username == message.users[0].username)
         {
             var data = new[]
@@ -160,7 +172,71 @@ app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
         }
         else
         {
-            response.WriteAsync($"<body><p>Error, bedoelde je {username} of {message.users[0].username}?</p><form method='get' action='/secretariaatsForm'><input type='submit' value='return'/></form></body>");
+            response.WriteAsync($"<body><p>Bedoelde je {username} of {message.users[0].username}?</p><form method='get' action='/secretariaatsForm'><input type='submit' value='return'/></form></body>");
+        }
+    }
+});
+
+app.MapPost("/postformSwagger", async (string? studentId, string? studentUsername) =>
+{
+    string id = studentId;
+    string username = studentUsername;
+    // CVO: var wstoken = "4aedb8e394c3ac61c042c0753e4d5c57";
+    var wstoken = "ae9250588c297a3960180a89f6a63a58";
+    var wsfunction = "core_user_update_users";
+    var moodlewsrestformat = "json";
+    if(id == "" || id is null){
+        if(username == "" || username is null){
+            return "Beide velden zijn leeg. Probeer het opnieuw.";
+        }else{
+            var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
+            var jsonContent = await stringTask.Content.ReadAsStringAsync();
+            var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+            if(message.users.Count == 0) return $"Geen student met username {username} gevonden.";
+            var data = new[]
+            {
+                new KeyValuePair<string,string>("users[0][username]",username),
+                new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+            };
+            post(wstoken, wsfunction, moodlewsrestformat, data);
+            return "Wachtwoord correct reset.";
+        }
+    }else if(username == "" || username is null){
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        if(message.users.Count == 0) return $"Geen student met id {id} gevonden.";
+        var data = new[]
+        {
+            new KeyValuePair<string,string>("users[0][id]",id),
+            new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+            new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+            new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+        };
+        post(wstoken, wsfunction, moodlewsrestformat, data);
+        return "Wachtwoord correct reset.";
+    }else{
+        var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
+        var jsonContent = await stringTask.Content.ReadAsStringAsync();
+        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        if(message.users.Count == 0) return $"Geen student met id {id} gevonden.";
+        if (username == message.users[0].username)
+        {
+            var data = new[]
+            {
+                new KeyValuePair<string,string>("users[0][id]",id),
+                new KeyValuePair<string,string>("users[0][password]","Moodle1."),
+                new KeyValuePair<string,string>("users[0][preferences][0][type]","auth_forcepasswordchange"),
+                new KeyValuePair<string,string>("users[0][preferences][0][value]","1")
+            };
+            post(wstoken, wsfunction, moodlewsrestformat, data);
+            return "Wachtwoord correct reset.";
+        }
+        else
+        {
+            return $"Bedoelde je {username} of {message.users[0].username}?";
         }
     }
 });
@@ -542,4 +618,9 @@ public class UserObject
     public int descriptionformat { get; set; }
     public string profileimageurlsmall { get; set; }
     public string profileimageurl { get; set; }
+}
+
+public class SwaggerForm {
+    public string id { get; set; }
+    public string username { get; set; }
 }
