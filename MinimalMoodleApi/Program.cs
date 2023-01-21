@@ -46,8 +46,8 @@ clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, 
 // Pass the handler to httpclient
 HttpClient client = new HttpClient(clientHandler);
 
-//var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
-var uri = "http://localhost/webservice/rest/server.php";
+var uri = "https://moodlev4.cvoantwerpen.org/webservice/rest/server.php";
+//var uri = "http://localhost/webservice/rest/server.php";
 
 var post = async (string wstoken, string wsfunction, string moodlewsrestformat, KeyValuePair<string, string>[] data) =>
 {
