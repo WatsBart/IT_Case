@@ -66,8 +66,8 @@ namespace TodoApi.Controllers
         }
 
         // Add user to course and Remove user from course methods
-        [Route(@"api/addusertocourse")]
-        [HttpGet]
+        [Route(@"api/Enrolluser")]
+        [HttpPost]
         public string Enrolluser(int roleid, int userid, int courseid)
         {
             var enroles = new Enroll()
@@ -93,7 +93,7 @@ namespace TodoApi.Controllers
             return "User enrolled";
         }
         [Route(@"api/removerol")]
-        [HttpGet]
+        [HttpPost]
         public string Unassignrole(int roleid, int userid,int instanceid,string contextlevel)
         {
             var enroles = new Enroll()

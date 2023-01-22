@@ -12,7 +12,7 @@ namespace TodoApi.Controllers
 
         // Create groups
         [Route(@"api/Creategroup")]
-        [HttpGet]
+        [HttpPost]
         public string CreateGroup(int courseid,string name,string description,int descriptionformat)
         {
             var group = new Group()
@@ -42,7 +42,7 @@ namespace TodoApi.Controllers
         }
 
         [Route(@"api/addusertogroup")]
-        [HttpGet]
+        [HttpPost]
 
         public string Addtogroup(int groupid, int userid)
         {
@@ -68,7 +68,7 @@ namespace TodoApi.Controllers
 
         }
         [Route(@"api/Removeuserfromgroup")]
-        [HttpGet]
+        [HttpPost]
 
         public string Removefromthegroup(int groupid, int userid)
         {
