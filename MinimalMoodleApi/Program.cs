@@ -343,7 +343,7 @@ app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
             //Enkel id is leeg. Zoek in de database naar een gebruiker met de ingegeven username
             var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
             var jsonContent = await stringTask.Content.ReadAsStringAsync();
-            var message = JsonSerializer.Deserialize<Root>(jsonContent);
+            var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
             //Als de lijst van users met deze username 0 lang is bestaat deze user niet.
             if(message.users.Count == 0) response.WriteAsync($"Geen student met username {username} gevonden.");
             else{
@@ -362,7 +362,7 @@ app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
         //Enkel username is leeg. Zoek in de database naar een gebruiker met ingegeven id
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);    
         //Als de lijst van users met ingegeven id 0 lang is bestaat de user niet
         if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden");            
         else {
@@ -380,7 +380,7 @@ app.MapPost("/postform", async (HttpRequest request, HttpResponse response) =>
         //Beide velden zijn ingevuld. Zoek in de database naar een gebruiker met het ingegeven id.
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
         //Als de lijst van users met ingegeven id 0 lang is bestaat de user niet
         if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden.");
         //Controleer of de ingegeven username overeenkomt met de username van de gebruiker met het ingegeven id
@@ -426,7 +426,7 @@ app.MapPost("/postformSwagger", async (string? studentId, string? studentUsernam
         }else{
             var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
             var jsonContent = await stringTask.Content.ReadAsStringAsync();
-            var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+            var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);    
             if(message.users.Count == 0) return $"Geen student met username {username} gevonden.";
             var data = new[]
             {
@@ -441,7 +441,7 @@ app.MapPost("/postformSwagger", async (string? studentId, string? studentUsernam
     }else if(username == "" || username is null){
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
         if(message.users.Count == 0) return $"Geen student met id {id} gevonden.";
         var data = new[]
         {
@@ -455,7 +455,7 @@ app.MapPost("/postformSwagger", async (string? studentId, string? studentUsernam
     }else{
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
         if(message.users.Count == 0) return $"Geen student met id {id} gevonden.";
         if (username == message.users[0].username)
         {
@@ -479,7 +479,7 @@ app.MapPost("/postformSwagger", async (string? studentId, string? studentUsernam
 /*
     Een simpele form met 4 inputvelden. Id, username, fullname, email
 */
-app.MapGet("/studentenForm", /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")]*/ async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/studentForm", /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")]*/ async (HttpRequest request, HttpResponse response) =>
 {
     response.WriteAsync("<body><form method='post' action='/postStudentForm'><label for='id'>Student's id</label><br/><input type='text' name='id' value='' /><br/><label for='username'>Student's username</label><br/><input type='text' name='username' /><br/><label for='fullname'>Student's full name</label><br/><input type='text' name='fullname' value='' /><br /><label for='email'>Student's e-mail</label><br/><input type='text' name='email' value='' /><br /><input type='submit' /></form></body>");
 });
@@ -509,7 +509,7 @@ app.MapPost("/postStudentForm", async (HttpRequest request, HttpResponse respons
             //Enkel id is leeg. Zoek in de database naar een gebruiker met ingegeven username
             var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
             var jsonContent = await stringTask.Content.ReadAsStringAsync();
-            var message = JsonSerializer.Deserialize<Root>(jsonContent);
+            var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
             //Als de lijst van studenten met ingegeven username 0 lang is bestaat de gebruiker niet
             if(message.users.Count == 0) response.WriteAsync($"<body><p>Geen student met username {username} gevonden. Probeer het opnieuw.</p><form method='get' action='/studentenForm'><input type='submit' value='return'/></form></body>");
             else {
@@ -536,7 +536,7 @@ app.MapPost("/postStudentForm", async (HttpRequest request, HttpResponse respons
         //Enkel username is leeg. Zoek een gebruiker met het ingegeven id.
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);    
         //Als de lijst van gebruikers met ingegeven id 0 lang is bestaat de gebruiker niet.
         if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden");
         else{
@@ -562,7 +562,7 @@ app.MapPost("/postStudentForm", async (HttpRequest request, HttpResponse respons
         //Beide velden zijn ingevuld. Zoek in de database naar een gebruiker met het ingegeven id.
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
         //Als de lijst van gebruikers met ingegeven id 0 lang is bestaat de gebruiker niet.
         if(message.users.Count == 0) response.WriteAsync($"Geen student met id {id} gevonden.");
         //Controleer of de ingegeven username overeenkomt met de username van de gebruiker met het ingegeven id.
@@ -613,7 +613,7 @@ app.MapPost("/postStudentFormSwagger", async (string? StudentId, string? Student
         }else{
             var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=username&criteria[0][value]={username}");
             var jsonContent = await stringTask.Content.ReadAsStringAsync();
-            var message = JsonSerializer.Deserialize<Root>(jsonContent);
+            var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
             if(message.users.Count == 0) return($"Geen student met username {username} gevonden. Probeer het opnieuw.");
             else {
                 string fullnameOfStudentWithUsername = message.users[0].fullname;
@@ -636,7 +636,7 @@ app.MapPost("/postStudentFormSwagger", async (string? StudentId, string? Student
     }else if(username is null){
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);    
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);    
         if(message.users.Count == 0) return($"Geen student met id {id} gevonden");
         else{
             string fullnameOfStudentWithId = message.users[0].fullname;
@@ -658,7 +658,7 @@ app.MapPost("/postStudentFormSwagger", async (string? StudentId, string? Student
     }else{
         var stringTask = await client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction=core_user_get_users&moodlewsrestformat=json&criteria[0][key]=id&criteria[0][value]={id}");
         var jsonContent = await stringTask.Content.ReadAsStringAsync();
-        var message = JsonSerializer.Deserialize<Root>(jsonContent);
+        var message = JsonSerializer.Deserialize<UserListObject>(jsonContent);
         if(message.users.Count == 0) return($"Geen student met id {id} gevonden.");
         if (username == message.users[0].username)
         {
@@ -736,36 +736,6 @@ public class User
     }
 }
 
-public class UserElement
-{
-    public long? id { get; set; }
-    public string? username { get; set; }
-    public string? firstname { get; set; }
-    public string? lastname { get; set; }
-    public string? fullname { get; set; }
-    public string? email { get; set; }
-    public string? department { get; set; }
-    public long? firstaccess { get; set; }
-    public long? lastaccess { get; set; }
-    public string? auth { get; set; }
-    public bool? suspended { get; set; }
-    public bool? confirmed { get; set; }
-    public string? lang { get; set; }
-    public string? theme { get; set; }
-    public string? timezone { get; set; }
-    public long? mailformat { get; set; }
-    public string? description { get; set; }
-    public long? descriptionformat { get; set; }
-    public Uri? profileimageurlsmall { get; set; }
-    public Uri? profileimageurl { get; set; }
-}
-
-public class MoodleUserlistObject
-{
-    public UserElement[] users { get; set; }
-    public object[] warnings { get; set; }
-}
-
 public class TokenUser
 {
     public string Username { get; set; }
@@ -835,7 +805,7 @@ public class dataPasswordResetObject
     public string email { get; set; } = "";
 }
 
-public class Root
+public class UserListObject
 {
     public List<UserObject> users { get; set; }
     public List<object> warnings { get; set; }
