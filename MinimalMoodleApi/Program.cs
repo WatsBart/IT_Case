@@ -111,6 +111,205 @@ app.MapGet("/securityTest", [Authorize] async (HttpRequest request, HttpResponse
     response.WriteAsync("hello world");
 });
 
+//course methods
+app.MapGet("/getcourses", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response, string token) =>
+{
+    var wstoken = token;
+    var wsfunction = "core_course_get_courses";
+    var moodlewsrestformat = "json";
+    var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
+    try
+    {
+        var message = await JsonSerializer.DeserializeAsync<List<Course>>(await stringTask);
+        if (message is not null)
+        {
+            return message;
+        }
+        return null;
+    }
+    catch (Exception e)
+    {
+        var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
+        if (message is not null)
+        {
+            response.WriteAsync(message.ToString());
+        }
+    }
+    return null;
+});
+
+
+app.MapPost("/createcourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataCourseObject dataObject) =>
+{
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "core_course_create_courses";
+    var fullname = dataObject.fullname;
+    var shortname = dataObject.shortname;
+    var categoryId = dataObject.categoryid;
+    var moodlewsrestformat = "json";
+
+    Course newCourse = new Course();
+    newCourse.fullname = fullname;
+    newCourse.shortname = shortname;
+    newCourse.categoryid = categoryId;
+
+    var data = Course.courseToData(newCourse);
+    post(wstoken, wsfunction, moodlewsrestformat, data);
+
+});
+
+app.MapGet("/deletecourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
+{
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_course_delete_courses";
+    var id = request.Query["id"];
+    var moodlewsrestformat = "json";
+    client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
+});
+
+
+app.MapPost("/addusertocourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataEnrolmentObject dataObject) =>
+{
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "enrol_manual_enrol_users";
+    var roleid = dataObject.roleid;
+    var courseid = dataObject.courseid;
+    var userid = dataObject.userid;
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("enrolments[0][roleid]",roleid.ToString()),
+        new KeyValuePair<string,string>("enrolments[0][userid]",userid.ToString()),
+        new KeyValuePair<string,string>("enrolments[0][courseid]",courseid.ToString())
+    };
+
+    post(wstoken, wsfunction, moodlewsrestformat, data);
+});
+
+app.MapPost("/removestudentfromcourse", async ([FromBody] dataRoleObject dataObject) =>
+{
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "core_role_unassign_roles";
+    var roleid = "5";
+    var instanceid = dataObject.instanceid;
+    var userid = dataObject.userid;
+    var contextlevel = "course";
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("unassignments[0][roleid]",roleid.ToString()),
+        new KeyValuePair<string,string>("unassignments[0][userid]",userid.ToString()),
+        new KeyValuePair<string,string>("unassignments[0][contextlevel]",contextlevel),
+        new KeyValuePair<string,string>("unassignments[0][instanceid]",instanceid.ToString())
+    };
+
+    post(wstoken, wsfunction, moodlewsrestformat, data);
+});
+
+//user methods
+app.MapPost("/createuser", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataUserObject dataObject) =>
+{
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "core_user_create_users";
+    var username = dataObject.username;
+    var password = dataObject.password;
+    var firstname = dataObject.firstname;
+    var lastname = dataObject.lastname;
+    var email = dataObject.email;
+    var moodlewsrestformat = "json";
+    User newUser = new User();
+    newUser.username = username;
+    newUser.password = password;
+    newUser.firstname = firstname;
+    newUser.lastname = lastname;
+    newUser.email = email;
+    var data = User.userToData(newUser);
+    post(wstoken, wsfunction, moodlewsrestformat, data);
+});
+
+//Group methods
+app.MapPost("/addusertogroup", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataGroupObject dataObject) =>
+{
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "core_group_add_group_members";
+    var groupid = dataObject.groupid;
+    var userid = dataObject.userid;
+    var moodlewsrestformat = "json";
+
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("members[0][groupid]",groupid.ToString()),
+        new KeyValuePair<string,string>("members[0][userid]",userid.ToString())
+    };
+    post(wstoken, wsfunction, moodlewsrestformat, data);
+});
+
+app.MapPost("/removeuserfromgroup", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataGroupObject dataObject) =>
+{
+
+    var wstoken = dataObject.wstoken;
+    var wsfunction = "core_group_delete_group_members";
+    var groupid = dataObject.groupid;
+    var userid = dataObject.userid;
+    var moodlewsrestformat = "json";
+    var data = new[]
+    {
+        new KeyValuePair<string,string>("members[0][groupid]",groupid.ToString()),
+        new KeyValuePair<string,string>("members[0][userid]",userid.ToString())
+    };
+
+    post(wstoken, wsfunction, moodlewsrestformat, data);
+});
+
+
+//Password Reset
+
+app.MapPost("/resetpassword", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")] async ([FromBody] dataPasswordResetObject dataObject) =>
+{
+    var wstoken = dataObject.wstoken;
+    var username = dataObject.username;
+    var email = dataObject.email;
+    var wsfunction = "core_auth_request_password_reset";
+    var moodlewsrestformat = "json";
+    var data = new[]
+    {
+        new KeyValuePair<string, string>("username",username),
+        new KeyValuePair<string,string>("email",email)
+    };
+    post(wstoken, wsfunction, moodlewsrestformat, data);
+});
+
+app.MapGet("/getuser", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
+{
+    var wstoken = request.Query["wstoken"];
+    var wsfunction = "core_user_get_users";
+    var moodlewsrestformat = "json";
+    var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
+    try
+    {
+        var message = await JsonSerializer.DeserializeAsync<List<User>>(await stringTask);
+        if (message is not null)
+        {
+            foreach (var repo in message)
+            {
+                response.WriteAsync(repo.username + "\n");
+                response.WriteAsync(repo.password + "\n");
+            }
+        }
+    }
+    catch (Exception e)
+    {
+        var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
+        if (message is not null)
+        {
+            Console.WriteLine(message.ToString());
+        }
+    }
+});
+
+
 /*
     Een simpele form met submit knop die een id en een username vraagt.
     De form submit naar /postform
@@ -485,205 +684,6 @@ app.MapPost("/postStudentFormSwagger", async (string? StudentId, string? Student
         }
     }
 });
-
-//course methods
-app.MapGet("/getcourses", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response, string token) =>
-{
-    var wstoken = token;
-    var wsfunction = "core_course_get_courses";
-    var moodlewsrestformat = "json";
-    var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
-    try
-    {
-        var message = await JsonSerializer.DeserializeAsync<List<Course>>(await stringTask);
-        if (message is not null)
-        {
-            return message;
-        }
-        return null;
-    }
-    catch (Exception e)
-    {
-        var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
-        if (message is not null)
-        {
-            response.WriteAsync(message.ToString());
-        }
-    }
-    return null;
-});
-
-
-app.MapPost("/createcourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataCourseObject dataObject) =>
-{
-    var wstoken = dataObject.wstoken;
-    var wsfunction = "core_course_create_courses";
-    var fullname = dataObject.fullname;
-    var shortname = dataObject.shortname;
-    var categoryId = dataObject.categoryid;
-    var moodlewsrestformat = "json";
-
-    Course newCourse = new Course();
-    newCourse.fullname = fullname;
-    newCourse.shortname = shortname;
-    newCourse.categoryid = categoryId;
-
-    var data = Course.courseToData(newCourse);
-    post(wstoken, wsfunction, moodlewsrestformat, data);
-
-});
-
-app.MapGet("/deletecourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
-{
-    var wstoken = request.Query["wstoken"];
-    var wsfunction = "core_course_delete_courses";
-    var id = request.Query["id"];
-    var moodlewsrestformat = "json";
-    client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
-});
-
-
-app.MapPost("/addusertocourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataEnrolmentObject dataObject) =>
-{
-    var wstoken = dataObject.wstoken;
-    var wsfunction = "enrol_manual_enrol_users";
-    var roleid = dataObject.roleid;
-    var courseid = dataObject.courseid;
-    var userid = dataObject.userid;
-    var moodlewsrestformat = "json";
-
-    var data = new[]
-    {
-        new KeyValuePair<string,string>("enrolments[0][roleid]",roleid.ToString()),
-        new KeyValuePair<string,string>("enrolments[0][userid]",userid.ToString()),
-        new KeyValuePair<string,string>("enrolments[0][courseid]",courseid.ToString())
-    };
-
-    post(wstoken, wsfunction, moodlewsrestformat, data);
-});
-
-app.MapPost("/removestudentfromcourse", async ([FromBody] dataRoleObject dataObject) =>
-{
-    var wstoken = dataObject.wstoken;
-    var wsfunction = "core_role_unassign_roles";
-    var roleid = "5";
-    var instanceid = dataObject.instanceid;
-    var userid = dataObject.userid;
-    var contextlevel = "course";
-    var moodlewsrestformat = "json";
-
-    var data = new[]
-    {
-        new KeyValuePair<string,string>("unassignments[0][roleid]",roleid.ToString()),
-        new KeyValuePair<string,string>("unassignments[0][userid]",userid.ToString()),
-        new KeyValuePair<string,string>("unassignments[0][contextlevel]",contextlevel),
-        new KeyValuePair<string,string>("unassignments[0][instanceid]",instanceid.ToString())
-    };
-
-    post(wstoken, wsfunction, moodlewsrestformat, data);
-});
-
-//user methods
-app.MapPost("/createuser", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataUserObject dataObject) =>
-{
-    var wstoken = dataObject.wstoken;
-    var wsfunction = "core_user_create_users";
-    var username = dataObject.username;
-    var password = dataObject.password;
-    var firstname = dataObject.firstname;
-    var lastname = dataObject.lastname;
-    var email = dataObject.email;
-    var moodlewsrestformat = "json";
-    User newUser = new User();
-    newUser.username = username;
-    newUser.password = password;
-    newUser.firstname = firstname;
-    newUser.lastname = lastname;
-    newUser.email = email;
-    var data = User.userToData(newUser);
-    post(wstoken, wsfunction, moodlewsrestformat, data);
-});
-
-//Group methods
-app.MapPost("/addusertogroup", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataGroupObject dataObject) =>
-{
-    var wstoken = dataObject.wstoken;
-    var wsfunction = "core_group_add_group_members";
-    var groupid = dataObject.groupid;
-    var userid = dataObject.userid;
-    var moodlewsrestformat = "json";
-
-    var data = new[]
-    {
-        new KeyValuePair<string,string>("members[0][groupid]",groupid.ToString()),
-        new KeyValuePair<string,string>("members[0][userid]",userid.ToString())
-    };
-    post(wstoken, wsfunction, moodlewsrestformat, data);
-});
-
-app.MapPost("/removeuserfromgroup", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataGroupObject dataObject) =>
-{
-
-    var wstoken = dataObject.wstoken;
-    var wsfunction = "core_group_delete_group_members";
-    var groupid = dataObject.groupid;
-    var userid = dataObject.userid;
-    var moodlewsrestformat = "json";
-    var data = new[]
-    {
-        new KeyValuePair<string,string>("members[0][groupid]",groupid.ToString()),
-        new KeyValuePair<string,string>("members[0][userid]",userid.ToString())
-    };
-
-    post(wstoken, wsfunction, moodlewsrestformat, data);
-});
-
-
-//Password Reset
-
-app.MapPost("/resetpassword", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")] async ([FromBody] dataPasswordResetObject dataObject) =>
-{
-    var wstoken = dataObject.wstoken;
-    var username = dataObject.username;
-    var email = dataObject.email;
-    var wsfunction = "core_auth_request_password_reset";
-    var moodlewsrestformat = "json";
-    var data = new[]
-    {
-        new KeyValuePair<string, string>("username",username),
-        new KeyValuePair<string,string>("email",email)
-    };
-    post(wstoken, wsfunction, moodlewsrestformat, data);
-});
-
-app.MapGet("/getuser", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
-{
-    var wstoken = request.Query["wstoken"];
-    var wsfunction = "core_user_get_users";
-    var moodlewsrestformat = "json";
-    var stringTask = client.GetStreamAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}");
-    try
-    {
-        var message = await JsonSerializer.DeserializeAsync<List<User>>(await stringTask);
-        if (message is not null)
-        {
-            foreach (var repo in message)
-            {
-                response.WriteAsync(repo.username + "\n");
-                response.WriteAsync(repo.password + "\n");
-            }
-        }
-    }
-    catch (Exception e)
-    {
-        var message = await JsonSerializer.DeserializeAsync<Object>(await stringTask);
-        if (message is not null)
-        {
-            Console.WriteLine(message.ToString());
-        }
-    }
-});
-
 
 app.UseAuthentication();
 app.UseAuthorization();
