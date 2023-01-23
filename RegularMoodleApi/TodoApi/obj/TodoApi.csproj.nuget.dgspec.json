@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {}
+    "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {
+    "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
+        "projectUniqueName": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
         "projectName": "TodoApi",
-        "projectPath": "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
-        "packagesPath": "C:\\Users\\shubp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\shubp\\OneDrive\\Desktop\\Graduaat2023\\Tweede Jaar\\It-case\\FinalVersion\\IT_Case\\RegularMoodleApi\\TodoApi\\obj\\",
+        "projectPath": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\TodoApi.csproj",
+        "packagesPath": "C:\\Users\\Ian Segers\\.nuget\\packages\\",
+        "outputPath": "E:\\git repos\\IT_Case\\RegularMoodleApi\\TodoApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\shubp\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ian Segers\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -82,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

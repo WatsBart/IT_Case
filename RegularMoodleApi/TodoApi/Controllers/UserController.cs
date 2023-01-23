@@ -41,7 +41,7 @@ namespace TodoApi.Controllers
         public string ChangeUserSuspendStatus(string username)
         {
             var client = new HttpClient();
-            var response = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_get_users&criteria[0][key]=username&criteria[0][value]={username}&moodlewsrestformat=json");
+            var response = client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_get_users&criteria[0][key]=username&criteria[0][value]={username}&moodlewsrestformat=json");
             var result = response.Result.Content.ReadAsStringAsync();
             Console.WriteLine(result.Result);
             result.Wait();
@@ -51,14 +51,14 @@ namespace TodoApi.Controllers
 
             if (user.Users[0].Suspended == false)
             {
-                response = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_update_users&users[0][id]={user.Users[0].Id}&users[0][suspended]=1&moodlewsrestformat=json");
+                response = client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_update_users&users[0][id]={user.Users[0].Id}&users[0][suspended]=1&moodlewsrestformat=json");
                 result = response.Result.Content.ReadAsStringAsync();
                 result.Wait();
                 return $"{username} suspended";
             }
             else
             {
-                response = client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_update_users&users[0][id]={user.Users[0].Id}&users[0][suspended]=0&moodlewsrestformat=json");
+                response = client.GetAsync($"https://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_user_update_users&users[0][id]={user.Users[0].Id}&users[0][suspended]=0&moodlewsrestformat=json");
                 result = response.Result.Content.ReadAsStringAsync();
                 result.Wait();
                 return $"{username} unsuspended";
