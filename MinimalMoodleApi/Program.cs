@@ -158,7 +158,7 @@ app.MapPost("/createcourse", [Authorize(AuthenticationSchemes = JwtBearerDefault
 
 });
 
-app.MapGet("/deletecourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataIdObject dataIdObject) =>
+app.MapPost("/deletecourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataIdObject dataIdObject) =>
 {
     var wstoken = dataIdObject.wstoken;
     var wsfunction = "core_course_delete_courses";
