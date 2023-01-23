@@ -13,7 +13,7 @@ namespace TodoApi.Controllers
         // Create groups
         [Route(@"api/Creategroup")]
         [HttpPost]
-        public string CreateGroup(int courseid,string name,string description,int descriptionformat)
+        public string CreateGroup(int courseid,string name,string description,int enrolmentkey)
         {
             var group = new Group()
             {
@@ -21,12 +21,12 @@ namespace TodoApi.Controllers
                 Courseid = courseid,
                 Name = name,
                 Description = description,
-                Descriptionformat = descriptionformat
+                Enrolmentkey = enrolmentkey
             };
             string enr = $"&groups[0][courseid={group.Courseid}";
             string enu = $"&groups[0][name]={group.Name}";
             string enc = $"&groups[0][description]={group.Description}";
-            string dformat = $"&groups[0][descriptionformat]={group.Descriptionformat}";
+            string dformat = $"&groups[0][enrolmentkey]={group.Enrolmentkey}";
 
 
             HttpClient client = new HttpClient();

@@ -25,6 +25,7 @@ namespace TodoApi.Controllers
 
         [Route("api/addcourse")]
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public string CreateCourse(string fullname, string shortname, long categoryid, string courseid)
         {
             var course = new Course()

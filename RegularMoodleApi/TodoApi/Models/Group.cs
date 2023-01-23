@@ -9,6 +9,7 @@
 
         public int Courseid { get; set; }
         public int Descriptionformat { get; set; }
+        public int Enrolmentkey { get; set; }
     }
 
 }

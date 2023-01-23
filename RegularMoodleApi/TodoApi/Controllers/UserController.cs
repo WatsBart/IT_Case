@@ -76,52 +76,79 @@ namespace TodoApi.Controllers
                 Userid = userid,
                 Courseid = courseid
             };
-            string enr = $"&enrolments[0][roleid]={enroles.Roleid}";
-            string enu = $"&enrolments[0][userid]={enroles.Userid}";
-            string enc = $"&enrolments[0][courseid]={enroles.Courseid}";
+
+            var json = JsonConvert.SerializeObject(enroles);
+            var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            using (var client = new HttpClient())
+            {
+                var response = client.PostAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=enrol_manual_enrol_users&enrolments[0][roleid]={enroles.Roleid}&enrolments[0][userid]={enroles.Userid}&enrolments[0][courseid]={enroles.Courseid}&moodlewsrestformat=json", data);
+                var result = response.Result.Content.ReadAsStringAsync();
+               
+                return $"User has been enrolled to a course";
+            }
 
 
-            HttpClient client = new HttpClient();
-            try
-            {
-                client.GetAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=enrol_manual_enrol_users{enr + enu + enc}&moodlewsrestformat=json");
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-            return "User enrolled";
+            //string enr = $"&enrolments[0][roleid]={enroles.Roleid}";
+            //string enu = $"&enrolments[0][userid]={enroles.Userid}";
+            //string enc = $"&enrolments[0][courseid]={enroles.Courseid}";
+
+
+            //HttpClient client = new HttpClient();
+            //try
+            //{
+            //    client.GetAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=enrol_manual_enrol_users{enr + enu + enc}&moodlewsrestformat=json");
+            //}
+            //catch (Exception ex)
+            //{
+            //    return ex.Message;
+            //}
+            //return "User enrolled";
         }
         [Route(@"api/removerol")]
         [HttpPost]
         public string Unassignrole(int roleid, int userid,int instanceid,string contextlevel)
         {
-            var enroles = new Enroll()
+            var unroles = new Enroll()
             {
                 Roleid=roleid,
                 Userid=userid,
                 Instanceid = instanceid,
                 Contextlevel = contextlevel
             };
-            string rid = $"&unassignments[0][roleid]={enroles.Roleid}";
-            string uid = $"&unassignments[0][userid]={enroles.Userid}";
-            string inid = $"&unassignments[0][instanceid]={enroles.Instanceid}";
-            string cid = $"&unassignments[0][contextlevel]={enroles.Contextlevel}";
 
+            var json = JsonConvert.SerializeObject(unroles);
+            var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-
-            HttpClient client = new HttpClient();
-            try
+            using (var client = new HttpClient())
             {
-                client.GetAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_role_unassign_roles{rid +uid+ inid+cid}&moodlewsrestformat=json");
+                var response = client.PostAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_role_unassign_roles&unassignments[0][roleid]={unroles.Roleid}&unassignments[0][userid]={unroles.Userid}&unassignments[0][instanceid]={unroles.Instanceid}&unassignments[0][contextlevel]={unroles.Contextlevel}&moodlewsrestformat=json", data);
+                var result = response.Result.Content.ReadAsStringAsync();
+
+                return $"User has their role removed";
             }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-            return "the user rol has been unassigned ";
+
+
+
+            //string rid = $"&unassignments[0][roleid]={enroles.Roleid}";
+            //string uid = $"&unassignments[0][userid]={enroles.Userid}";
+            //string inid = $"&unassignments[0][instanceid]={enroles.Instanceid}";
+            //string cid = $"&unassignments[0][contextlevel]={enroles.Contextlevel}";
+
+
+
+            //HttpClient client = new HttpClient();
+            //try
+            //{
+            //    client.GetAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_role_unassign_roles{rid +uid+ inid+cid}&moodlewsrestformat=json");
+            //}
+            //catch (Exception ex)
+            //{
+            //    return ex.Message;
+            //}
+            //return "the user rol has been unassigned ";
         }
-        // Group methods
+        
 
 
        

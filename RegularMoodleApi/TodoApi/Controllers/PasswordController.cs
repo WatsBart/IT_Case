@@ -26,7 +26,7 @@ namespace TodoApi.Controllers
 
             try
             {
-                client.GetAsync($"http://localhost/webservice/rest/server.php?wstoken={token}&wsfunction=core_auth_request_password{ems}&moodlewsrestformat=json");
+                client.GetAsync($"https://moodlev4.cvoantwerpen.org/webservice/rest/server.php?wstoken={token}&wsfunction=core_auth_request_password{ems}&moodlewsrestformat=json");
             }
             catch(Exception e)
             {
