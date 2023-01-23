@@ -158,11 +158,11 @@ app.MapPost("/createcourse", [Authorize(AuthenticationSchemes = JwtBearerDefault
 
 });
 
-app.MapGet("/deletecourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/deletecourse", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Service")] async ([FromBody] dataIdObject dataIdObject) =>
 {
-    var wstoken = request.Query["wstoken"];
+    var wstoken = dataIdObject.wstoken;
     var wsfunction = "core_course_delete_courses";
-    var id = request.Query["id"];
+    var id = dataIdObject.id;
     var moodlewsrestformat = "json";
     client.GetAsync($"{uri}?wstoken={wstoken}&wsfunction={wsfunction}&moodlewsrestformat={moodlewsrestformat}&courseids[0]={id}");
 });
@@ -765,6 +765,11 @@ public class dataUserObject
     public string firstname { get; set; }
     public string lastname { get; set; }
     public string email { get; set; }
+}
+
+public class dataIdObject{
+    public string wstoken { get; set; }
+    public string id { get; set; }
 }
 
 public class dataCourseObject
